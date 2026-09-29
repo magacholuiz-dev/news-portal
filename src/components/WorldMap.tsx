@@ -1,31 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import { useEffect, useRef, useState } from "react";
+import * as maptilersdk from "@maptiler/sdk";
+import "@maptiler/sdk/dist/maptiler-sdk.css";
 import ReportDialog, { type ReportArticle } from "./ReportDialog";
-
-/**
- * Leaflet mede o tamanho do container só na inicialização. Se o container
- * ainda não tinha seu tamanho final nesse momento (comum com dynamic
- * import + layout assíncrono), o mapa fica cortado até uma chamada manual
- * de invalidateSize().
- */
-function MapResizeHandler() {
-  const map = useMap();
-  useEffect(() => {
-    const invalidate = () => map.invalidateSize();
-    invalidate();
-    const timeout = setTimeout(invalidate, 200);
-    window.addEventListener("resize", invalidate);
-    return () => {
-      clearTimeout(timeout);
-      window.removeEventListener("resize", invalidate);
-    };
-  }, [map]);
-  return null;
-}
 
 export type LocationWithArticles = {
   id: number;
@@ -35,30 +13,108 @@ export type LocationWithArticles = {
   articles: ReportArticle[];
 };
 
-function createMarkerIcon(thumbnailUrl: string) {
-  const safeUrl = thumbnailUrl.replace(/"/g, "&quot;");
-  return L.divIcon({
-    className: "map-marker",
-    html: `<div class="map-marker-thumb"><img src="${safeUrl}" alt="" /></div>`,
-    iconSize: [44, 44],
-    iconAnchor: [22, 22],
-  });
-}
-
 // Trava o mapa a uma única volta do mundo (sem repetição horizontal), que
 // é a causa do bug em que marcadores "somem" ao rolar o mapa até ele dar
-// a volta: a camada de tiles repete infinitamente, mas os marcadores são
-// fixos numa única posição absoluta e não acompanham a cópia repetida.
-const WORLD_BOUNDS = L.latLngBounds([-85, -180], [85, 180]);
+// a volta: sem isso, a camada de tiles repete infinitamente, mas os
+// marcadores ficam fixos numa única posição absoluta.
+const WORLD_BOUNDS: maptilersdk.LngLatBoundsLike = [-179, -80, 179, 80];
+
+function createMarkerElement(thumbnailUrl: string) {
+  const el = document.createElement("div");
+  el.className = "map-marker";
+  el.innerHTML = `<div class="map-marker-thumb"><img src="${thumbnailUrl.replace(/"/g, "&quot;")}" alt="" /></div>`;
+  return el;
+}
 
 export default function WorldMap({
   locations,
 }: {
   locations: LocationWithArticles[];
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<maptilersdk.Map | null>(null);
+  const [map, setMap] = useState<maptilersdk.Map | null>(null);
   const [openLocation, setOpenLocation] = useState<LocationWithArticles | null>(
     null,
   );
+
+  useEffect(() => {
+    if (!containerRef.current || mapRef.current) return;
+    const container = containerRef.current;
+
+    let cancelled = false;
+    let rafId: number;
+    let timeout: ReturnType<typeof setTimeout>;
+    let invalidate: (() => void) | null = null;
+
+    // O MapLibre calcula matrizes internas já na construção do mapa. Se o
+    // container ainda estiver com largura/altura zero nesse instante
+    // (comum logo após o dynamic import montar), essa conta pode quebrar
+    // de um jeito que não se autocorrige depois. Por isso esperamos o
+    // layout ter um tamanho real antes de criar o mapa.
+    function waitForSizeAndInit() {
+      if (cancelled) return;
+      const { width, height } = container.getBoundingClientRect();
+      if (width === 0 || height === 0) {
+        rafId = requestAnimationFrame(waitForSizeAndInit);
+        return;
+      }
+
+      const instance = new maptilersdk.Map({
+        container,
+        apiKey: process.env.NEXT_PUBLIC_MAPTILER_KEY,
+        style: maptilersdk.MapStyle.STREETS.DARK,
+        language: maptilersdk.Language.ENGLISH,
+        center: [10, 20],
+        zoom: 1.3,
+        minZoom: 1.3,
+        maxZoom: 12,
+        navigationControl: "top-left",
+        geolocateControl: false,
+      });
+      mapRef.current = instance;
+
+      // Aplicar maxBounds já na construção do mapa quebra o cálculo interno
+      // do MapLibre; aplicar depois de carregado evita o problema e tem o
+      // mesmo efeito prático de travar o mundo numa única volta.
+      instance.once("load", () => {
+        instance.setMaxBounds(WORLD_BOUNDS);
+        setMap(instance);
+      });
+
+      invalidate = () => instance.resize();
+      timeout = setTimeout(invalidate, 200);
+      window.addEventListener("resize", invalidate);
+    }
+
+    rafId = requestAnimationFrame(waitForSizeAndInit);
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(rafId);
+      clearTimeout(timeout);
+      if (invalidate) window.removeEventListener("resize", invalidate);
+      mapRef.current?.remove();
+      mapRef.current = null;
+      setMap(null);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!map) return;
+
+    const markers = locations.map((location) => {
+      const el = createMarkerElement(location.articles[0].heroImageUrl);
+      el.addEventListener("click", () => setOpenLocation(location));
+      return new maptilersdk.Marker({ element: el })
+        .setLngLat([location.lng, location.lat])
+        .addTo(map);
+    });
+
+    return () => {
+      markers.forEach((marker) => marker.remove());
+    };
+  }, [map, locations]);
 
   return (
     <>
@@ -84,42 +140,10 @@ export default function WorldMap({
         }
       `}</style>
 
-      <MapContainer
-        center={[20, 10]}
-        zoom={2}
-        minZoom={2}
-        maxZoom={12}
-        zoomSnap={0.5}
-        wheelPxPerZoomLevel={90}
-        scrollWheelZoom
-        worldCopyJump={false}
-        maxBounds={WORLD_BOUNDS}
-        maxBoundsViscosity={1.0}
+      <div
+        ref={containerRef}
         style={{ height: "100%", width: "100%", background: "#0e1420" }}
-      >
-        <MapResizeHandler />
-        {/* CARTO passou a exigir chave de API pra tiles; usamos o basemap
-            escuro gratuito e sem chave da Esri (base + rótulos separados). */}
-        <TileLayer
-          attribution="Tiles &copy; Esri"
-          url="https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
-          noWrap
-        />
-        <TileLayer
-          url="https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}"
-          noWrap
-        />
-        {locations.map((location) => (
-          <Marker
-            key={location.id}
-            position={[location.lat, location.lng]}
-            icon={createMarkerIcon(location.articles[0].heroImageUrl)}
-            eventHandlers={{
-              click: () => setOpenLocation(location),
-            }}
-          />
-        ))}
-      </MapContainer>
+      />
 
       {openLocation && (
         <ReportDialog
