@@ -19,7 +19,7 @@ function formatDate(iso: string | null) {
   if (!iso) return "";
   return new Intl.DateTimeFormat("pt-BR", {
     day: "2-digit",
-    month: "long",
+    month: "2-digit",
     year: "numeric",
   }).format(new Date(iso));
 }
@@ -54,37 +54,51 @@ export default function ReportDialog({
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/80 p-4"
+      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/85 p-4"
     >
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-md bg-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-neutral-200 px-4 py-3">
-          <p className="text-xs font-bold tracking-wide text-red-700 uppercase">
+      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-sm bg-neutral-900 text-white shadow-2xl">
+        <div className="flex items-center justify-between border-b border-white/10 bg-black/40 px-4 py-2.5">
+          <p className="text-xs font-bold tracking-wide text-amber-400 uppercase">
             {locationName}
           </p>
           <button
             type="button"
             onClick={onClose}
             aria-label="Fechar"
-            className="flex h-8 w-8 items-center justify-center rounded-full text-xl text-neutral-500 hover:bg-neutral-100"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-xl text-neutral-400 hover:bg-white/10 hover:text-white"
           >
             &times;
           </button>
         </div>
 
         {articles.length > 1 && (
-          <div className="flex gap-2 overflow-x-auto border-b border-neutral-200 px-4 py-2">
+          <div className="flex gap-0 divide-x divide-white/10 overflow-x-auto border-b border-white/10 bg-black/20">
             {articles.map((item, index) => (
               <button
                 key={item.slug}
                 type="button"
                 onClick={() => setActiveIndex(index)}
-                className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${
+                className={`w-36 shrink-0 px-3 py-2.5 text-left transition-colors ${
                   index === activeIndex
-                    ? "bg-neutral-900 text-white"
-                    : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
+                    ? "bg-amber-400/10"
+                    : "hover:bg-white/5"
                 }`}
               >
-                {item.title}
+                <p
+                  className={`text-[10px] font-bold tracking-wide uppercase ${
+                    index === activeIndex ? "text-amber-400" : "text-neutral-400"
+                  }`}
+                >
+                  {item.category ?? "Episódio"}
+                  {item.publishedAt && (
+                    <span className="ml-1.5 font-normal text-neutral-500">
+                      {formatDate(item.publishedAt)}
+                    </span>
+                  )}
+                </p>
+                <p className="mt-1 line-clamp-2 text-xs leading-snug font-semibold text-neutral-100">
+                  {item.title}
+                </p>
               </button>
             ))}
           </div>
@@ -110,22 +124,27 @@ export default function ReportDialog({
         </div>
 
         <div className="p-5">
-          <h2 className="mb-1 font-serif text-xl font-bold text-neutral-900">
-            {article.title}
-          </h2>
-          <p className="mb-3 text-xs text-neutral-500">
-            {[article.category, article.author, formatDate(article.publishedAt)]
+          <p className="mb-2 text-xs font-bold tracking-wide text-amber-400 uppercase">
+            {[article.category, formatDate(article.publishedAt)]
               .filter(Boolean)
               .join(" · ")}
           </p>
+          <h2 className="mb-2 font-serif text-2xl leading-tight font-black text-white">
+            {article.title}
+          </h2>
+          {article.author && (
+            <p className="mb-3 text-xs text-neutral-400">
+              Por {article.author}
+            </p>
+          )}
           {article.excerpt && (
-            <p className="mb-4 text-sm leading-relaxed text-neutral-700">
+            <p className="mb-4 text-sm leading-relaxed text-neutral-300">
               {article.excerpt}
             </p>
           )}
           <Link
             href={`/article/${article.slug}`}
-            className="text-sm font-semibold text-red-700 hover:underline"
+            className="text-sm font-semibold text-amber-400 hover:underline"
           >
             Ver reportagem completa &rarr;
           </Link>

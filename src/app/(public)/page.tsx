@@ -37,11 +37,11 @@ export default async function HomePage() {
   return (
     <div className="relative h-[75vh] min-h-[500px] w-full">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] flex justify-center px-4 pt-6 sm:justify-start sm:px-6">
-        <div className="pointer-events-auto max-w-sm rounded-md bg-white/95 p-4 shadow-lg backdrop-blur-sm">
-          <h1 className="font-serif text-xl font-black text-neutral-900">
+        <div className="pointer-events-auto max-w-sm rounded-md border border-white/10 bg-neutral-900/85 p-4 shadow-2xl backdrop-blur-md">
+          <h1 className="font-serif text-xl font-black text-white">
             Nome do Projeto
           </h1>
-          <p className="mt-1 text-sm text-neutral-600">
+          <p className="mt-1 text-sm text-neutral-300">
             Uma série documental sobre conflitos ao redor do mundo. Clique
             nos marcadores do mapa para assistir aos episódios de cada
             local.
@@ -50,9 +50,9 @@ export default async function HomePage() {
       </div>
 
       {mapLocations.length === 0 ? (
-        <div className="flex h-full items-center justify-center bg-neutral-100 px-4 text-center text-sm text-neutral-500">
+        <div className="flex h-full items-center justify-center bg-neutral-900 px-4 text-center text-sm text-neutral-400">
           Nenhuma reportagem com localização publicada ainda. Acesse{" "}
-          <a href="/admin/login" className="ml-1 underline">
+          <a href="/admin/login" className="ml-1 text-white underline">
             /admin/login
           </a>{" "}
           para adicionar a primeira.
