@@ -22,11 +22,11 @@ export default function PublicLayout({
             <Link href="/#capitulos" className="hover:text-amber-400">
               Capítulos
             </Link>
-            {/* Análise de Dados e Explorar ainda apontam pra Reportagens —
-                ganham seções próprias nos Loops 4 e 5. */}
-            <Link href="/#reportagens" className="hover:text-amber-400">
+            <Link href="/#analise" className="hover:text-amber-400">
               Análise de Dados
             </Link>
+            {/* Explorar ainda aponta pra Reportagens — ganha seção
+                própria (filtro + comparação) no Loop 5. */}
             <Link href="/#reportagens" className="hover:text-amber-400">
               Explorar
             </Link>

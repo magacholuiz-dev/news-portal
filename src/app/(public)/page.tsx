@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import type { LocationWithArticles } from "@/components/WorldMap";
 import ChapterScroll from "@/components/ChapterScroll";
+import FlightPath, { type RouteStop } from "@/components/FlightPath";
+import CoverageBarChart, { type CoverageRow } from "@/components/CoverageBarChart";
 import StoryList from "@/components/StoryList";
 import Hero from "@/components/Hero";
 
@@ -55,6 +57,37 @@ export default async function HomePage() {
     locationName: article.location?.name ?? null,
   }));
 
+  // Seção 04 (análise de dados): só territórios com Ordem_Exibicao
+  // definida (os 14 do recorte jornalístico real) entram na rota aérea e
+  // no gráfico de cobertura — Locations fora desse recorte (sem os
+  // campos da planilha preenchidos) não aparecem aqui.
+  const dataTerritories = locations
+    .filter((location) => location.displayOrder !== null)
+    .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+
+  const routeStops: RouteStop[] = dataTerritories
+    .filter((location) => location.coveragePct !== null)
+    .map((location) => ({
+      name: location.name,
+      lat: location.lat,
+      lng: location.lng,
+      displayOrder: location.displayOrder,
+      coveragePct: location.coveragePct,
+      mediaAttentionClass: location.mediaAttentionClass,
+      journalistNote: location.journalistNote,
+      accessCategory: location.accessCategory,
+      riskLevelRSF: location.riskLevelRSF,
+    }));
+
+  const coverageRows: CoverageRow[] = dataTerritories
+    .filter((location) => location.coveragePct !== null)
+    .map((location) => ({
+      name: location.name,
+      coveragePct: location.coveragePct as number,
+      mediaAttentionClass: location.mediaAttentionClass,
+      isAnchorEpisode: location.articles.some((a) => a.isAnchorEpisode),
+    }));
+
   return (
     <>
       <Hero />
@@ -72,6 +105,13 @@ export default async function HomePage() {
         </div>
       ) : (
         <ChapterScroll locations={mapLocations} />
+      )}
+
+      {routeStops.length > 0 && (
+        <>
+          <FlightPath stops={routeStops} />
+          <CoverageBarChart rows={coverageRows} />
+        </>
       )}
 
       <StoryList articles={storyArticles} />
