@@ -58,12 +58,14 @@ export default async function HomePage() {
         <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] flex justify-center px-4 pt-6 sm:justify-start sm:px-6">
           <div className="pointer-events-auto max-w-sm rounded-md border border-white/10 bg-neutral-900/85 p-4 shadow-2xl backdrop-blur-md">
             <h1 className="font-serif text-xl font-black text-white">
-              Nome do Projeto
+              Onde um jornalista precisa ir para contar uma guerra?
             </h1>
-            <p className="mt-1 text-sm text-neutral-300">
-              Uma série documental sobre conflitos ao redor do mundo. Clique
-              nos marcadores do mapa para assistir aos episódios de cada
-              local.
+            <p className="mt-2 text-sm text-neutral-300">
+              E o que ele encontra quando chega lá? Uma série de reportagens
+              sobre os desafios geográficos, políticos e operacionais do
+              jornalismo de cobertura de conflitos e direitos humanos ao
+              redor do mundo. Clique nos marcadores do mapa para explorar
+              cada território.
             </p>
           </div>
         </div>
@@ -82,6 +84,29 @@ export default async function HomePage() {
       </div>
 
       <StoryList articles={storyArticles} />
+
+      <section className="border-t border-neutral-200 bg-white py-16">
+        <div className="mx-auto max-w-2xl px-4 text-center sm:px-6">
+          <p className="font-serif text-2xl leading-snug font-black text-neutral-900 sm:text-3xl">
+            &ldquo;A notícia começa em algum lugar. Para chegar até nós,
+            alguém precisou estar lá.&rdquo;
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <a
+              href="#reportagens"
+              className="rounded-sm bg-neutral-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-neutral-800"
+            >
+              Ler todas as reportagens
+            </a>
+            <a
+              href="/sobre"
+              className="rounded-sm border border-neutral-300 px-5 py-2.5 text-sm font-semibold text-neutral-800 hover:bg-neutral-50"
+            >
+              Sobre o projeto e metodologia
+            </a>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

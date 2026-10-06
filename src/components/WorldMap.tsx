@@ -80,9 +80,24 @@ export default function WorldMap({
       instance.once("load", () => {
         instance.setMaxBounds(WORLD_BOUNDS);
         setMap(instance);
+
+        // Em alguns carregamentos o canvas WebGL fica em branco mesmo com
+        // os tiles já baixados — falta um repaint que o próprio navegador
+        // só dispara depois de um resize real. resize() não força nada se
+        // o tamanho não mudou, então usamos triggerRepaint() (que sempre
+        // agenda um novo frame) logo após o load e de novo em seguida via
+        // requestAnimationFrame, garantindo que o primeiro frame pintado
+        // aconteça depois do layout/paint real da página.
+        instance.triggerRepaint();
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => instance.triggerRepaint());
+        });
       });
 
-      invalidate = () => instance.resize();
+      invalidate = () => {
+        instance.resize();
+        instance.triggerRepaint();
+      };
       timeout = setTimeout(invalidate, 200);
       window.addEventListener("resize", invalidate);
     }

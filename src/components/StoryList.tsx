@@ -23,11 +23,16 @@ export default function StoryList({ articles }: { articles: StoryArticle[] }) {
   if (articles.length === 0) return null;
 
   return (
-    <section className="bg-neutral-900 py-14">
+    <section id="reportagens" className="scroll-mt-20 bg-neutral-900 py-14">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 className="mb-8 font-serif text-3xl font-black text-white sm:text-4xl">
+        <h2 className="mb-4 font-serif text-3xl font-black text-white sm:text-4xl">
           Reportagens
         </h2>
+        <p className="mb-10 max-w-2xl text-base text-neutral-300">
+          As experiências reunidas nesta reportagem atravessam diferentes
+          territórios e contextos políticos. Em alguns lugares, o desafio é
+          chegar. Em outros, circular. Em outros, voltar.
+        </p>
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {articles.map((article) => (
             <Link

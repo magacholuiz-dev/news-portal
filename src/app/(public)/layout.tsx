@@ -19,6 +19,12 @@ export default function PublicLayout({
             <Link href="/" className="hover:text-red-700">
               Início
             </Link>
+            <Link href="/#reportagens" className="hover:text-red-700">
+              Reportagens
+            </Link>
+            <Link href="/sobre" className="hover:text-red-700">
+              Sobre
+            </Link>
           </nav>
         </div>
       </header>
