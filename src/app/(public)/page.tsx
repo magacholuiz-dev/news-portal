@@ -125,24 +125,30 @@ export default async function HomePage() {
 
       <StoryList articles={storyArticles} />
 
-      <section className="border-t border-neutral-200 bg-white py-16">
+      <section className="border-t border-white/10 bg-neutral-950 py-16">
         <div className="mx-auto max-w-2xl px-4 text-center sm:px-6">
-          <p className="font-serif text-2xl leading-snug font-black text-neutral-900 sm:text-3xl">
+          <p className="font-serif text-2xl leading-snug font-black text-white sm:text-3xl">
             &ldquo;A notícia começa em algum lugar. Para chegar até nós,
             alguém precisou estar lá.&rdquo;
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
             <a
-              href="#reportagens"
-              className="rounded-sm bg-neutral-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-neutral-800"
+              href="#capitulos"
+              className="rounded-sm bg-amber-400 px-5 py-2.5 text-sm font-semibold text-neutral-900 hover:bg-amber-300"
             >
-              Ler todas as reportagens
+              Ver os capítulos
+            </a>
+            <a
+              href="#analise"
+              className="rounded-sm border border-white/20 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/5"
+            >
+              Acessar dados e metodologia
             </a>
             <a
               href="/sobre"
-              className="rounded-sm border border-neutral-300 px-5 py-2.5 text-sm font-semibold text-neutral-800 hover:bg-neutral-50"
+              className="rounded-sm border border-white/20 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/5"
             >
-              Sobre o projeto e metodologia
+              Sobre o projeto
             </a>
           </div>
         </div>
