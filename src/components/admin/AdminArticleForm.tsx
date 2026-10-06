@@ -19,6 +19,7 @@ export type AdminArticleFormValues = {
   videoUrl: string;
   contentHtml: string;
   published: boolean;
+  isAnchorEpisode: boolean;
   galleryItems: GalleryItemValue[];
   location: LocationValue | null;
 };
@@ -34,6 +35,7 @@ const emptyValues: AdminArticleFormValues = {
   videoUrl: "",
   contentHtml: "",
   published: false,
+  isAnchorEpisode: false,
   galleryItems: [],
   location: null,
 };
@@ -265,6 +267,25 @@ export default function AdminArticleForm({
           />
           <span className="mt-1 block text-xs text-neutral-400">
             Se preenchido, a foto de destaque abrirá esse vídeo em um popup.
+          </span>
+        </label>
+
+        <label className="mt-4 flex items-start gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={values.isAnchorEpisode}
+            onChange={(e) => update("isAnchorEpisode", e.target.checked)}
+            className="mt-0.5 h-4 w-4"
+          />
+          <span>
+            <span className="block font-medium text-neutral-700">
+              Episódio-âncora da região
+            </span>
+            <span className="block text-xs text-neutral-400">
+              Marca esta matéria como o episódio em vídeo que representa o
+              continente do território selecionado acima, na seção de
+              capítulos do scrollytelling.
+            </span>
           </span>
         </label>
       </div>

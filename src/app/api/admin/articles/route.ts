@@ -72,6 +72,7 @@ export async function POST(request: NextRequest) {
       published: Boolean(body.published),
       publishedAt: body.published ? new Date() : null,
       locationId: location?.id ?? null,
+      isAnchorEpisode: Boolean(body.isAnchorEpisode),
       galleryItems: {
         create: galleryItems.map((item, index) => ({ ...item, order: index })),
       },

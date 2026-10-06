@@ -13,23 +13,26 @@ datasource db {
 }
 
 model Article {
-  id           Int       @id @default(autoincrement())
-  slug         String    @unique
-  title        String
-  subtitle     String?
-  excerpt      String?
-  heroImageUrl String
-  videoUrl     String?
-  contentHtml  String
-  author       String?
-  category     String?
-  published    Boolean   @default(false)
-  publishedAt  DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  galleryItems GalleryItem[]
-  locationId   Int?
-  location     Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  id              Int           @id @default(autoincrement())
+  slug            String        @unique
+  title           String
+  subtitle        String?
+  excerpt         String?
+  heroImageUrl    String
+  videoUrl        String?
+  contentHtml     String
+  author          String?
+  category        String?
+  published       Boolean       @default(false)
+  publishedAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  galleryItems    GalleryItem[]
+  locationId      Int?
+  location        Location?     @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  // Marca esta reportagem como o episódio em vídeo que ancora o passo de
+  // scroll do continente do seu Location (ver Location.continent).
+  isAnchorEpisode Boolean       @default(false)
 
   @@index([locationId])
 }
@@ -44,6 +47,17 @@ model Location {
   lng       Float
   createdAt DateTime  @default(now())
   articles  Article[]
+
+  // Campos do recorte jornalístico (scrollytelling / análise de dados).
+  // Todos opcionais: um Location pode existir sem participar do recorte.
+  continent           String? // "Europa" | "Asia e Oriente Medio" | "Africa" | "Americas" | "Oceania"
+  continentOrder      Int? // 1-5, ordem dos passos de scroll (Seção 03)
+  displayOrder        Int? // Ordem_Exibicao da planilha (1-14, rota da Seção 04)
+  coveragePct         Float? // Proporcao_Cobertura_Pct
+  mediaAttentionClass String? // Clas_Atencao_Midia (ex: "Hipercoberta")
+  journalistNote      String? // Observacao_Jornalistica
+  accessCategory      String? // Categoria_Acesso (Visto Concedido / Zona de Risco / Entrada Barrada)
+  riskLevelRSF        String? // Nivel_Risco_RSF
 }
 
 // Uma miniatura da galeria da matéria: clicar nela abre o vídeo vinculado

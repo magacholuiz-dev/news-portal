@@ -34,6 +34,7 @@ export default async function EditArticlePage({ params }: PageParams) {
           videoUrl: article.videoUrl ?? "",
           contentHtml: article.contentHtml,
           published: article.published,
+          isAnchorEpisode: article.isAnchorEpisode,
           galleryItems: article.galleryItems.map((item) => ({
             key: String(item.id),
             imageUrl: item.imageUrl,

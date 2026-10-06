@@ -23,6 +23,9 @@ export default function DashboardLayout({
             >
               Nova matéria
             </Link>
+            <Link href="/admin/territories" className="hover:text-neutral-900">
+              Territórios
+            </Link>
           </nav>
         </div>
         <div className="flex items-center gap-4">

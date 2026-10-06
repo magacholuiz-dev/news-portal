@@ -114,6 +114,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
           ? existing.publishedAt
           : null,
       locationId: location?.id ?? null,
+      isAnchorEpisode: Boolean(body.isAnchorEpisode),
       galleryItems: {
         deleteMany: {},
         create: galleryItems.map((item, index) => ({ ...item, order: index })),
