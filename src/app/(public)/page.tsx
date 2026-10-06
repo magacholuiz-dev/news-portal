@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import type { LocationWithArticles } from "@/components/WorldMap";
-import WorldMapLoader from "@/components/WorldMapLoader";
+import ChapterScroll from "@/components/ChapterScroll";
 import StoryList from "@/components/StoryList";
 import Hero from "@/components/Hero";
 
@@ -31,6 +31,7 @@ export default async function HomePage() {
       name: location.name,
       lat: location.lat,
       lng: location.lng,
+      continent: location.continent,
       articles: location.articles.map((article) => ({
         slug: article.slug,
         title: article.title,
@@ -40,6 +41,7 @@ export default async function HomePage() {
         author: article.author,
         category: article.category,
         publishedAt: article.publishedAt?.toISOString() ?? null,
+        isAnchorEpisode: article.isAnchorEpisode,
       })),
     }));
 
@@ -57,36 +59,20 @@ export default async function HomePage() {
     <>
       <Hero />
 
-      <div
-        id="capitulos"
-        className="relative h-[75vh] min-h-[500px] w-full scroll-mt-16"
-      >
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] flex justify-center px-4 pt-6 sm:justify-start sm:px-6">
-          <div className="pointer-events-auto max-w-sm rounded-md border border-white/10 bg-neutral-900/85 p-4 shadow-2xl backdrop-blur-md">
-            <h2 className="font-serif text-xl font-black text-white">
-              Uma série sobre os desafios de cobrir conflitos
-            </h2>
-            <p className="mt-2 text-sm text-neutral-300">
-              Reportagens sobre os desafios geográficos, políticos e
-              operacionais do jornalismo de cobertura de conflitos e direitos
-              humanos ao redor do mundo. Clique nos marcadores do mapa para
-              explorar cada território.
-            </p>
-          </div>
+      {mapLocations.length === 0 ? (
+        <div
+          id="capitulos"
+          className="flex h-[75vh] min-h-[500px] scroll-mt-16 items-center justify-center bg-neutral-900 px-4 text-center text-sm text-neutral-400"
+        >
+          Nenhuma reportagem com localização publicada ainda. Acesse{" "}
+          <a href="/admin/login" className="ml-1 text-white underline">
+            /admin/login
+          </a>{" "}
+          para adicionar a primeira.
         </div>
-
-        {mapLocations.length === 0 ? (
-          <div className="flex h-full items-center justify-center bg-neutral-900 px-4 text-center text-sm text-neutral-400">
-            Nenhuma reportagem com localização publicada ainda. Acesse{" "}
-            <a href="/admin/login" className="ml-1 text-white underline">
-              /admin/login
-            </a>{" "}
-            para adicionar a primeira.
-          </div>
-        ) : (
-          <WorldMapLoader locations={mapLocations} />
-        )}
-      </div>
+      ) : (
+        <ChapterScroll locations={mapLocations} />
+      )}
 
       <StoryList articles={storyArticles} />
 

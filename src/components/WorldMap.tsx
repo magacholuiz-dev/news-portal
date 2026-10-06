@@ -10,7 +10,13 @@ export type LocationWithArticles = {
   name: string;
   lat: number;
   lng: number;
+  continent?: string | null;
   articles: ReportArticle[];
+};
+
+export type MapFocusView = {
+  center: [number, number];
+  zoom: number;
 };
 
 // Trava o mapa a uma única volta do mundo (sem repetição horizontal), que
@@ -19,17 +25,25 @@ export type LocationWithArticles = {
 // marcadores ficam fixos numa única posição absoluta.
 const WORLD_BOUNDS: maptilersdk.LngLatBoundsLike = [-179, -80, 179, 80];
 
-function createMarkerElement(thumbnailUrl: string) {
+function createMarkerElement(thumbnailUrl: string, isAnchor: boolean) {
   const el = document.createElement("div");
-  el.className = "map-marker";
+  el.className = `map-marker${isAnchor ? " map-marker--anchor" : ""}`;
   el.innerHTML = `<div class="map-marker-thumb"><img src="${thumbnailUrl.replace(/"/g, "&quot;")}" alt="" /></div>`;
   return el;
 }
 
 export default function WorldMap({
   locations,
+  highlightContinent = null,
+  focusView = null,
 }: {
   locations: LocationWithArticles[];
+  /** Quando definido, marcadores fora desse continente ficam esmaecidos
+   * (efeito de "iluminação" da Seção 03/scrollytelling). `null` mostra
+   * todos os marcadores com opacidade normal. */
+  highlightContinent?: string | null;
+  /** Quando muda, o mapa voa (flyTo) até esse enquadramento. */
+  focusView?: MapFocusView | null;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maptilersdk.Map | null>(null);
@@ -119,17 +133,37 @@ export default function WorldMap({
     if (!map) return;
 
     const markers = locations.map((location) => {
-      const el = createMarkerElement(location.articles[0].heroImageUrl);
+      const isAnchor = location.articles.some((a) => a.isAnchorEpisode);
+      const el = createMarkerElement(location.articles[0].heroImageUrl, isAnchor);
+      el.style.transition = "opacity 0.4s ease";
       el.addEventListener("click", () => setOpenLocation(location));
-      return new maptilersdk.Marker({ element: el })
+      const dimmed =
+        highlightContinent !== null && location.continent !== highlightContinent;
+      const marker = new maptilersdk.Marker({ element: el })
         .setLngLat([location.lng, location.lat])
         .addTo(map);
+      // Setar `el.style.opacity` direto não gruda: o próprio Marker do
+      // MapLibre reescreve isso no próprio ciclo de render (detecção de
+      // oclusão em globe/terrain), via `setOpacity`/`_updateOpacity`. É
+      // preciso usar a API do Marker pra o valor sobreviver aos repaints.
+      marker.setOpacity(dimmed ? "0.25" : "1");
+      return marker;
     });
 
     return () => {
       markers.forEach((marker) => marker.remove());
     };
-  }, [map, locations]);
+  }, [map, locations, highlightContinent]);
+
+  useEffect(() => {
+    if (!map || !focusView) return;
+    map.flyTo({
+      center: focusView.center,
+      zoom: focusView.zoom,
+      duration: 1600,
+      essential: true,
+    });
+  }, [map, focusView]);
 
   return (
     <>
@@ -152,6 +186,13 @@ export default function WorldMap({
         .map-marker:hover .map-marker-thumb {
           transform: scale(1.7);
           box-shadow: 0 0 0 4px rgba(245, 201, 75, 0.4), 0 4px 16px rgba(0,0,0,0.7);
+        }
+        .map-marker--anchor .map-marker-thumb {
+          width: 54px;
+          height: 54px;
+          border-width: 3px;
+          border-color: #fff;
+          box-shadow: 0 0 0 4px rgba(245, 201, 75, 0.55), 0 2px 14px rgba(0,0,0,0.7);
         }
       `}</style>
 

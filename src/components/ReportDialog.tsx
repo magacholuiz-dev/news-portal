@@ -13,6 +13,7 @@ export type ReportArticle = {
   author: string | null;
   category: string | null;
   publishedAt: string | null;
+  isAnchorEpisode?: boolean;
 };
 
 function formatDate(iso: string | null) {
