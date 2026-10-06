@@ -6,3 +6,13 @@
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-serif);
 }
+
+/* Fade-in atmosférico do fundo do Hero (Seção 01). */
+@keyframes heroFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

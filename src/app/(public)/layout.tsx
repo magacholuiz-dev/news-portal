@@ -7,35 +7,46 @@ export default function PublicLayout({
 }) {
   return (
     <>
-      <header className="border-b-4 border-neutral-900">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+      <header className="sticky top-0 z-[600] border-b border-white/10 bg-neutral-950/95">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <Link
             href="/"
-            className="font-serif text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl"
+            className="font-serif text-lg font-black tracking-tight text-white sm:text-xl"
           >
             PORTAL NOTÍCIA
           </Link>
-          <nav className="hidden gap-6 text-sm font-semibold tracking-wide text-neutral-700 uppercase sm:flex">
-            <Link href="/" className="hover:text-red-700">
-              Início
+          <nav className="hidden gap-5 text-xs font-semibold tracking-wide text-neutral-200 uppercase sm:flex">
+            <Link href="/#hero" className="hover:text-amber-400">
+              O Projeto
             </Link>
-            <Link href="/#reportagens" className="hover:text-red-700">
-              Reportagens
+            <Link href="/#capitulos" className="hover:text-amber-400">
+              Capítulos
             </Link>
-            <Link href="/sobre" className="hover:text-red-700">
+            {/* Análise de Dados e Explorar ainda apontam pra Reportagens —
+                ganham seções próprias nos Loops 4 e 5. */}
+            <Link href="/#reportagens" className="hover:text-amber-400">
+              Análise de Dados
+            </Link>
+            <Link href="/#reportagens" className="hover:text-amber-400">
+              Explorar
+            </Link>
+            <Link href="/sobre" className="hover:text-amber-400">
               Sobre
             </Link>
           </nav>
         </div>
       </header>
       <main className="flex-1">{children}</main>
-      <footer className="mt-16 border-t border-neutral-200 bg-neutral-50">
-        <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-neutral-500 sm:px-6">
+      <footer className="border-t border-neutral-800 bg-neutral-950">
+        <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-neutral-400 sm:px-6">
           <p>
             &copy; {new Date().getFullYear()} Portal Notícia. Todos os
             direitos reservados.
           </p>
-          <Link href="/admin/login" className="mt-2 inline-block underline">
+          <Link
+            href="/admin/login"
+            className="mt-2 inline-block text-neutral-400 underline hover:text-neutral-200"
+          >
             Área administrativa
           </Link>
         </div>

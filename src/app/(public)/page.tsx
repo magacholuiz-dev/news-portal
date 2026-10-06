@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import type { LocationWithArticles } from "@/components/WorldMap";
 import WorldMapLoader from "@/components/WorldMapLoader";
 import StoryList from "@/components/StoryList";
+import Hero from "@/components/Hero";
 
 export const dynamic = "force-dynamic";
 
@@ -54,18 +55,22 @@ export default async function HomePage() {
 
   return (
     <>
-      <div className="relative h-[75vh] min-h-[500px] w-full">
+      <Hero />
+
+      <div
+        id="capitulos"
+        className="relative h-[75vh] min-h-[500px] w-full scroll-mt-16"
+      >
         <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] flex justify-center px-4 pt-6 sm:justify-start sm:px-6">
           <div className="pointer-events-auto max-w-sm rounded-md border border-white/10 bg-neutral-900/85 p-4 shadow-2xl backdrop-blur-md">
-            <h1 className="font-serif text-xl font-black text-white">
-              Onde um jornalista precisa ir para contar uma guerra?
-            </h1>
+            <h2 className="font-serif text-xl font-black text-white">
+              Uma série sobre os desafios de cobrir conflitos
+            </h2>
             <p className="mt-2 text-sm text-neutral-300">
-              E o que ele encontra quando chega lá? Uma série de reportagens
-              sobre os desafios geográficos, políticos e operacionais do
-              jornalismo de cobertura de conflitos e direitos humanos ao
-              redor do mundo. Clique nos marcadores do mapa para explorar
-              cada território.
+              Reportagens sobre os desafios geográficos, políticos e
+              operacionais do jornalismo de cobertura de conflitos e direitos
+              humanos ao redor do mundo. Clique nos marcadores do mapa para
+              explorar cada território.
             </p>
           </div>
         </div>
