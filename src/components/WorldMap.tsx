@@ -11,6 +11,14 @@ export type LocationWithArticles = {
   lat: number;
   lng: number;
   continent?: string | null;
+  // Campos do recorte jornalístico (Seção 04/05) — opcionais, só
+  // preenchidos depois que o seed real dos 14 territórios rodar.
+  displayOrder?: number | null;
+  coveragePct?: number | null;
+  mediaAttentionClass?: string | null;
+  journalistNote?: string | null;
+  accessCategory?: string | null;
+  riskLevelRSF?: string | null;
   articles: ReportArticle[];
 };
 
@@ -36,6 +44,8 @@ export default function WorldMap({
   locations,
   highlightContinent = null,
   focusView = null,
+  selectedIds = null,
+  onMarkerClick = null,
 }: {
   locations: LocationWithArticles[];
   /** Quando definido, marcadores fora desse continente ficam esmaecidos
@@ -44,6 +54,12 @@ export default function WorldMap({
   highlightContinent?: string | null;
   /** Quando muda, o mapa voa (flyTo) até esse enquadramento. */
   focusView?: MapFocusView | null;
+  /** IDs de Location destacados com um anel diferente (modo comparação
+   * da Seção 05). `null` não destaca nenhum. */
+  selectedIds?: number[] | null;
+  /** Quando definido, clicar num marcador chama isso em vez de abrir o
+   * ReportDialog (usado pelo modo comparação da Seção 05). */
+  onMarkerClick?: ((location: LocationWithArticles) => void) | null;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maptilersdk.Map | null>(null);
@@ -136,7 +152,12 @@ export default function WorldMap({
       const isAnchor = location.articles.some((a) => a.isAnchorEpisode);
       const el = createMarkerElement(location.articles[0].heroImageUrl, isAnchor);
       el.style.transition = "opacity 0.4s ease";
-      el.addEventListener("click", () => setOpenLocation(location));
+      if (selectedIds?.includes(location.id)) {
+        el.classList.add("map-marker--selected");
+      }
+      el.addEventListener("click", () =>
+        onMarkerClick ? onMarkerClick(location) : setOpenLocation(location),
+      );
       const dimmed =
         highlightContinent !== null && location.continent !== highlightContinent;
       const marker = new maptilersdk.Marker({ element: el })
@@ -153,7 +174,7 @@ export default function WorldMap({
     return () => {
       markers.forEach((marker) => marker.remove());
     };
-  }, [map, locations, highlightContinent]);
+  }, [map, locations, highlightContinent, selectedIds, onMarkerClick]);
 
   useEffect(() => {
     if (!map || !focusView) return;
@@ -193,6 +214,10 @@ export default function WorldMap({
           border-width: 3px;
           border-color: #fff;
           box-shadow: 0 0 0 4px rgba(245, 201, 75, 0.55), 0 2px 14px rgba(0,0,0,0.7);
+        }
+        .map-marker--selected .map-marker-thumb {
+          border-color: #22d3ee;
+          box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.5), 0 2px 14px rgba(0,0,0,0.7);
         }
       `}</style>
 

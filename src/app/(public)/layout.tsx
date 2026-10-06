@@ -25,9 +25,7 @@ export default function PublicLayout({
             <Link href="/#analise" className="hover:text-amber-400">
               Análise de Dados
             </Link>
-            {/* Explorar ainda aponta pra Reportagens — ganha seção
-                própria (filtro + comparação) no Loop 5. */}
-            <Link href="/#reportagens" className="hover:text-amber-400">
+            <Link href="/#explorar" className="hover:text-amber-400">
               Explorar
             </Link>
             <Link href="/sobre" className="hover:text-amber-400">

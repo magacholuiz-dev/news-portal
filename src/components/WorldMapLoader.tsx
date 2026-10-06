@@ -16,16 +16,22 @@ export default function WorldMapLoader({
   locations,
   highlightContinent = null,
   focusView = null,
+  selectedIds = null,
+  onMarkerClick = null,
 }: {
   locations: LocationWithArticles[];
   highlightContinent?: string | null;
   focusView?: MapFocusView | null;
+  selectedIds?: number[] | null;
+  onMarkerClick?: ((location: LocationWithArticles) => void) | null;
 }) {
   return (
     <WorldMap
       locations={locations}
       highlightContinent={highlightContinent}
       focusView={focusView}
+      selectedIds={selectedIds}
+      onMarkerClick={onMarkerClick}
     />
   );
 }

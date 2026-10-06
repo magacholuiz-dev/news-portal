@@ -3,6 +3,7 @@ import type { LocationWithArticles } from "@/components/WorldMap";
 import ChapterScroll from "@/components/ChapterScroll";
 import FlightPath, { type RouteStop } from "@/components/FlightPath";
 import CoverageBarChart, { type CoverageRow } from "@/components/CoverageBarChart";
+import ExploreSection from "@/components/ExploreSection";
 import StoryList from "@/components/StoryList";
 import Hero from "@/components/Hero";
 
@@ -34,6 +35,12 @@ export default async function HomePage() {
       lat: location.lat,
       lng: location.lng,
       continent: location.continent,
+      displayOrder: location.displayOrder,
+      coveragePct: location.coveragePct,
+      mediaAttentionClass: location.mediaAttentionClass,
+      journalistNote: location.journalistNote,
+      accessCategory: location.accessCategory,
+      riskLevelRSF: location.riskLevelRSF,
       articles: location.articles.map((article) => ({
         slug: article.slug,
         title: article.title,
@@ -113,6 +120,8 @@ export default async function HomePage() {
           <CoverageBarChart rows={coverageRows} />
         </>
       )}
+
+      {mapLocations.length > 0 && <ExploreSection locations={mapLocations} />}
 
       <StoryList articles={storyArticles} />
 
