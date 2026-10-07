@@ -8,8 +8,11 @@
  *
  * O texto de cada reportagem (contentHtml) é placeholder — monta um
  * resumo a partir dos dados reais da planilha, não é a reportagem final
- * que a equipe vai escrever. Imagens e vídeos continuam sendo stock/demo
- * até os episódios reais ficarem prontos.
+ * que a equipe vai escrever. As imagens continuam sendo stock (picsum)
+ * até ter fotos reais, mas o vídeo de cada território já é uma
+ * reportagem em vídeo real de telejornal internacional (BBC/Al Jazeera)
+ * sobre aquele conflito/crise específica — placeholder editorial, não
+ * imagem genérica, até os 5 episódios reais da equipe ficarem prontos.
  */
 import "dotenv/config";
 import { PrismaClient } from "../src/generated/prisma/client";
@@ -18,15 +21,6 @@ import { slugify } from "../src/lib/slug";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
-
-// Vídeos de demonstração (curtas livres de direitos da Blender
-// Foundation) usados como placeholder até os episódios reais existirem.
-const DEMO_VIDEOS = [
-  "https://www.youtube.com/watch?v=aqz-KE-bpKQ", // Big Buck Bunny
-  "https://www.youtube.com/watch?v=eRsGyueVLvQ", // Sintel
-  "https://www.youtube.com/watch?v=R6MlUcmOul8", // Tears of Steel
-  "https://www.youtube.com/watch?v=TLkA0RELQ1g", // Elephant's Dream
-];
 
 type Territory = {
   id: string; // Territorio_ID da planilha
@@ -41,6 +35,10 @@ type Territory = {
   journalistNote: string; // Observacao_Jornalistica
   isAnchorEpisode: boolean;
   episodeTheme?: string; // só pros 5 episódios-âncora
+  // Reportagem em vídeo real (BBC News / Al Jazeera English) sobre o
+  // conflito/crise do território — placeholder editorial até os 5
+  // episódios próprios do projeto ficarem prontos.
+  videoUrl: string;
 };
 
 const TERRITORIES: Territory[] = [
@@ -58,6 +56,8 @@ const TERRITORIES: Territory[] = [
       "Conflito no topo da agenda global com presença massiva de imprensa internacional.",
     isAnchorEpisode: true,
     episodeTheme: "O conflito no topo da agenda global",
+    // BBC News: "War in Ukraine: Seven days that changed the world"
+    videoUrl: "https://www.youtube.com/watch?v=BzR_K2tEXSo",
   },
   {
     id: "GAZA",
@@ -73,6 +73,10 @@ const TERRITORIES: Territory[] = [
       "Cobertura intensa, porém operada sob risco extremo e bloqueios de entrada.",
     isAnchorEpisode: true,
     episodeTheme: "Cobertura sob risco extremo e bloqueios de entrada",
+    // Al Jazeera English: "Five Al Jazeera journalists killed in Israeli
+    // strike in Gaza" — escolhido de propósito: ilustra exatamente o
+    // risco de cobrir esse território, tema central do projeto.
+    videoUrl: "https://www.youtube.com/watch?v=LA4NyfLzdog",
   },
   {
     id: "ISRA",
@@ -87,6 +91,9 @@ const TERRITORIES: Territory[] = [
     journalistNote:
       "Cobertura associada aos desdobramentos de segurança interna e diplomacia.",
     isAnchorEpisode: false,
+    // BBC News: "Israel and Hamas reach Gaza ceasefire and hostage
+    // release deal, sources tell BBC"
+    videoUrl: "https://www.youtube.com/watch?v=sBzrwrbhwnA",
   },
   {
     id: "IRAN",
@@ -101,6 +108,8 @@ const TERRITORIES: Territory[] = [
     journalistNote:
       "Dependência de fontes locais ou imagens de redes sociais devido ao bloqueio.",
     isAnchorEpisode: false,
+    // BBC News: "Iranians describe protest crackdown to BBC"
+    videoUrl: "https://www.youtube.com/watch?v=m4sf355b3KQ",
   },
   {
     id: "LEBA",
@@ -115,6 +124,9 @@ const TERRITORIES: Territory[] = [
     journalistNote:
       "Atenção vinculada à escalada regional do Oriente Médio.",
     isAnchorEpisode: false,
+    // Al Jazeera English: "War in Lebanon: tens of thousands flee north
+    // as 492 killed in Israeli airstrikes"
+    videoUrl: "https://www.youtube.com/watch?v=vhDV03EIQh4",
   },
   {
     id: "MYAN",
@@ -129,6 +141,8 @@ const TERRITORIES: Territory[] = [
     journalistNote:
       "Pouca atenção internacional contínua; cobertura isolada na imprensa regional.",
     isAnchorEpisode: false,
+    // BBC News: "The deadly battles that tipped Myanmar into civil war"
+    videoUrl: "https://www.youtube.com/watch?v=x03zzXvbPeE",
   },
   {
     id: "SYRI",
@@ -143,6 +157,9 @@ const TERRITORIES: Territory[] = [
     journalistNote:
       "Cobertura pontual devido à duração prolongada e dificuldades de acesso.",
     isAnchorEpisode: false,
+    // BBC News: "Syria is 'not a threat to the world' its new Islamist
+    // leader tells BBC"
+    videoUrl: "https://www.youtube.com/watch?v=SNVfDEqeapQ",
   },
   {
     id: "YEME",
@@ -157,6 +174,8 @@ const TERRITORIES: Territory[] = [
     journalistNote:
       "Considerada uma das guerras mais silenciadas do mundo pela ONU.",
     isAnchorEpisode: false,
+    // BBC News: "Yemen facing world's 'worst famine in decades'"
+    videoUrl: "https://www.youtube.com/watch?v=-LGLlY2ZjWU",
   },
   {
     id: "CISJ",
@@ -171,6 +190,9 @@ const TERRITORIES: Territory[] = [
     journalistNote:
       "Sombra da cobertura principal concentrada no território de Gaza.",
     isAnchorEpisode: false,
+    // BBC News: "BBC films dozens of settlers attacking Palestinian
+    // community in West Bank"
+    videoUrl: "https://www.youtube.com/watch?v=ihnLnWuaRtg",
   },
   {
     id: "SUDA",
@@ -186,6 +208,8 @@ const TERRITORIES: Territory[] = [
       "Crise humanitária grave com baixa visibilidade nos grandes veículos ocidentais.",
     isAnchorEpisode: true,
     episodeTheme: "A crise humanitária grave que o mundo não vê",
+    // BBC Africa: "Sudan War: The story so far (Explained)"
+    videoUrl: "https://www.youtube.com/watch?v=thwp0gd0Q_A",
   },
   {
     id: "LIBY",
@@ -200,6 +224,8 @@ const TERRITORIES: Territory[] = [
     journalistNote:
       "Cobertura esporádica associada a crises migratórias no Mediterrâneo.",
     isAnchorEpisode: false,
+    // BBC News: "On the rescue boat as migrants flee Libya"
+    videoUrl: "https://www.youtube.com/watch?v=1Mfxb8xfZHo",
   },
   {
     id: "CUBA",
@@ -215,6 +241,9 @@ const TERRITORIES: Territory[] = [
       "Foco pontual em direitos humanos, repressão a protestos e êxodo migratório.",
     isAnchorEpisode: true,
     episodeTheme: "Voltar para casa",
+    // BBC News: "Cuba sees biggest protests against Communist
+    // government in decades"
+    videoUrl: "https://www.youtube.com/watch?v=S8mmBgf8P8Q",
   },
   {
     id: "MEXI",
@@ -229,6 +258,8 @@ const TERRITORIES: Territory[] = [
     journalistNote:
       "Foco pontual em episódios de violência extrema contra a imprensa.",
     isAnchorEpisode: false,
+    // BBC News: "Inside Mexico's feared Sinaloa drugs cartel"
+    videoUrl: "https://www.youtube.com/watch?v=dba70l3KFG8",
   },
   {
     id: "PNG_B",
@@ -244,10 +275,13 @@ const TERRITORIES: Territory[] = [
       "Silêncio quase total na imprensa internacional sobre disputas locais/regionais.",
     isAnchorEpisode: true,
     episodeTheme: "O silêncio quase total da imprensa internacional",
+    // Al Jazeera English: "Violent postelection riots continue in
+    // Papua New Guinea"
+    videoUrl: "https://www.youtube.com/watch?v=F4gmSGFTZ5w",
   },
 ];
 
-function buildArticle(territory: Territory, videoUrl: string) {
+function buildArticle(territory: Territory) {
   const countryName = territory.name.split(",").slice(1).join(",").trim() || territory.name;
   const title = territory.isAnchorEpisode
     ? `${countryName}: ${territory.episodeTheme}`
@@ -272,7 +306,7 @@ function buildArticle(territory: Territory, videoUrl: string) {
       : `Cobertura midiática: ${territory.mediaAttentionClass.toLowerCase()}`,
     excerpt: territory.journalistNote,
     heroImageUrl: `https://picsum.photos/seed/${territory.id.toLowerCase()}/1280/720`,
-    videoUrl,
+    videoUrl: territory.videoUrl,
     category: territory.continent,
     author: "Equipe Documental",
     contentHtml,
@@ -287,7 +321,7 @@ async function main() {
   await prisma.location.deleteMany({});
   console.log("Banco limpo.");
 
-  for (const [index, territory] of TERRITORIES.entries()) {
+  for (const territory of TERRITORIES) {
     const location = await prisma.location.create({
       data: {
         name: territory.name,
@@ -304,8 +338,7 @@ async function main() {
       },
     });
 
-    const videoUrl = DEMO_VIDEOS[index % DEMO_VIDEOS.length];
-    const article = buildArticle(territory, videoUrl);
+    const article = buildArticle(territory);
 
     await prisma.article.create({
       data: {
