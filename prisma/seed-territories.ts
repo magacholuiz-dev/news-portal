@@ -2,9 +2,10 @@
  * Loop 0 do rebuild em scrollytelling: limpa o banco e recria com os 14
  * territórios REAIS da planilha do projeto (cobertura, classificação de
  * atenção midiática e observação jornalística vêm da aba "Dados - site
- * (tcc)"). Categoria de acesso e nível de risco RSF ainda não foram
- * enviados pelo usuário — ficam `null` (editáveis depois em
- * /admin/territories).
+ * (tcc)"; categoria de acesso e nível de risco RSF vêm da aba
+ * gid=3804457, coluna Status_Carimbo/Nivel_Risco_RSF — Status_Carimbo
+ * traz "CATEGORIA / detalhe", uso só a categoria, que bate exatamente
+ * com os 3+1 carimbos já desenhados em PassportCard.tsx).
  *
  * O texto de cada reportagem (contentHtml) é placeholder — monta um
  * resumo a partir dos dados reais da planilha, não é a reportagem final
@@ -39,6 +40,8 @@ type Territory = {
   // conflito/crise do território — placeholder editorial até os 5
   // episódios próprios do projeto ficarem prontos.
   videoUrl: string;
+  accessCategory: string; // Categoria do Status_Carimbo (aba gid=3804457)
+  riskLevelRSF: string; // Nivel_Risco_RSF (aba gid=3804457)
 };
 
 const TERRITORIES: Territory[] = [
@@ -58,6 +61,8 @@ const TERRITORIES: Territory[] = [
     episodeTheme: "O conflito no topo da agenda global",
     // BBC News: "War in Ukraine: Seven days that changed the world"
     videoUrl: "https://www.youtube.com/watch?v=BzR_K2tEXSo",
+    accessCategory: "Visto Concedido",
+    riskLevelRSF: "Muito Alto",
   },
   {
     id: "GAZA",
@@ -77,6 +82,8 @@ const TERRITORIES: Territory[] = [
     // strike in Gaza" — escolhido de propósito: ilustra exatamente o
     // risco de cobrir esse território, tema central do projeto.
     videoUrl: "https://www.youtube.com/watch?v=LA4NyfLzdog",
+    accessCategory: "Entrada Barrada",
+    riskLevelRSF: "Crítico",
   },
   {
     id: "ISRA",
@@ -94,6 +101,8 @@ const TERRITORIES: Territory[] = [
     // BBC News: "Israel and Hamas reach Gaza ceasefire and hostage
     // release deal, sources tell BBC"
     videoUrl: "https://www.youtube.com/watch?v=sBzrwrbhwnA",
+    accessCategory: "Visto Concedido",
+    riskLevelRSF: "Alto",
   },
   {
     id: "IRAN",
@@ -110,6 +119,8 @@ const TERRITORIES: Territory[] = [
     isAnchorEpisode: false,
     // BBC News: "Iranians describe protest crackdown to BBC"
     videoUrl: "https://www.youtube.com/watch?v=m4sf355b3KQ",
+    accessCategory: "Entrada Barrada",
+    riskLevelRSF: "Crítico",
   },
   {
     id: "LEBA",
@@ -127,6 +138,8 @@ const TERRITORIES: Territory[] = [
     // Al Jazeera English: "War in Lebanon: tens of thousands flee north
     // as 492 killed in Israeli airstrikes"
     videoUrl: "https://www.youtube.com/watch?v=vhDV03EIQh4",
+    accessCategory: "Zona de Risco",
+    riskLevelRSF: "Alto",
   },
   {
     id: "MYAN",
@@ -143,6 +156,8 @@ const TERRITORIES: Territory[] = [
     isAnchorEpisode: false,
     // BBC News: "The deadly battles that tipped Myanmar into civil war"
     videoUrl: "https://www.youtube.com/watch?v=x03zzXvbPeE",
+    accessCategory: "Entrada Barrada",
+    riskLevelRSF: "Crítico",
   },
   {
     id: "SYRI",
@@ -160,6 +175,8 @@ const TERRITORIES: Territory[] = [
     // BBC News: "Syria is 'not a threat to the world' its new Islamist
     // leader tells BBC"
     videoUrl: "https://www.youtube.com/watch?v=SNVfDEqeapQ",
+    accessCategory: "Entrada Barrada",
+    riskLevelRSF: "Crítico",
   },
   {
     id: "YEME",
@@ -176,6 +193,8 @@ const TERRITORIES: Territory[] = [
     isAnchorEpisode: false,
     // BBC News: "Yemen facing world's 'worst famine in decades'"
     videoUrl: "https://www.youtube.com/watch?v=-LGLlY2ZjWU",
+    accessCategory: "Entrada Barrada",
+    riskLevelRSF: "Crítico",
   },
   {
     id: "CISJ",
@@ -193,6 +212,8 @@ const TERRITORIES: Territory[] = [
     // BBC News: "BBC films dozens of settlers attacking Palestinian
     // community in West Bank"
     videoUrl: "https://www.youtube.com/watch?v=ihnLnWuaRtg",
+    accessCategory: "Zona de Risco",
+    riskLevelRSF: "Muito Alto",
   },
   {
     id: "SUDA",
@@ -210,6 +231,8 @@ const TERRITORIES: Territory[] = [
     episodeTheme: "A crise humanitária grave que o mundo não vê",
     // BBC Africa: "Sudan War: The story so far (Explained)"
     videoUrl: "https://www.youtube.com/watch?v=thwp0gd0Q_A",
+    accessCategory: "Entrada Barrada",
+    riskLevelRSF: "Crítico",
   },
   {
     id: "LIBY",
@@ -226,6 +249,8 @@ const TERRITORIES: Territory[] = [
     isAnchorEpisode: false,
     // BBC News: "On the rescue boat as migrants flee Libya"
     videoUrl: "https://www.youtube.com/watch?v=1Mfxb8xfZHo",
+    accessCategory: "Zona de Risco",
+    riskLevelRSF: "Muito Alto",
   },
   {
     id: "CUBA",
@@ -244,6 +269,8 @@ const TERRITORIES: Territory[] = [
     // BBC News: "Cuba sees biggest protests against Communist
     // government in decades"
     videoUrl: "https://www.youtube.com/watch?v=S8mmBgf8P8Q",
+    accessCategory: "Visto Condicionado",
+    riskLevelRSF: "Alto",
   },
   {
     id: "MEXI",
@@ -260,6 +287,8 @@ const TERRITORIES: Territory[] = [
     isAnchorEpisode: false,
     // BBC News: "Inside Mexico's feared Sinaloa drugs cartel"
     videoUrl: "https://www.youtube.com/watch?v=dba70l3KFG8",
+    accessCategory: "Zona de Risco",
+    riskLevelRSF: "Muito Alto",
   },
   {
     id: "PNG_B",
@@ -278,6 +307,8 @@ const TERRITORIES: Territory[] = [
     // Al Jazeera English: "Violent postelection riots continue in
     // Papua New Guinea"
     videoUrl: "https://www.youtube.com/watch?v=F4gmSGFTZ5w",
+    accessCategory: "Entrada Barrada",
+    riskLevelRSF: "Médio / Alto",
   },
 ];
 
@@ -334,7 +365,8 @@ async function main() {
         coveragePct: territory.coveragePct,
         mediaAttentionClass: territory.mediaAttentionClass,
         journalistNote: territory.journalistNote,
-        // accessCategory / riskLevelRSF: ainda não enviados pelo usuário.
+        accessCategory: territory.accessCategory,
+        riskLevelRSF: territory.riskLevelRSF,
       },
     });
 

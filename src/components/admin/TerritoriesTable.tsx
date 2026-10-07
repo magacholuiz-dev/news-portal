@@ -25,6 +25,7 @@ const CONTINENT_OPTIONS = [
 
 const ACCESS_CATEGORY_OPTIONS = [
   "Visto Concedido",
+  "Visto Condicionado",
   "Zona de Risco",
   "Entrada Barrada",
 ];

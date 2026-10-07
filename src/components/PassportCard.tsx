@@ -8,13 +8,17 @@ export type PassportCardData = {
   riskLevelRSF: string | null;
 };
 
-// Cor do "carimbo" por categoria de acesso. `accessCategory` ainda não foi
-// enviado pelo usuário pra nenhum território — até lá, todo cartão cai no
-// cinza "Dado pendente" (nunca inventa um valor).
+// Cor do "carimbo" por categoria de acesso (aba gid=3804457 da
+// planilha, coluna Status_Carimbo). Território sem accessCategory
+// preenchido cai no cinza "Dado pendente" (nunca inventa um valor).
 const STAMP_STYLES: Record<string, { label: string; className: string }> = {
   "Visto Concedido": {
     label: "Visto concedido",
     className: "border-emerald-400 text-emerald-400",
+  },
+  "Visto Condicionado": {
+    label: "Visto condicionado",
+    className: "border-sky-400 text-sky-400",
   },
   "Zona de Risco": {
     label: "Zona de risco",

@@ -68,7 +68,7 @@ export default function ChapterScroll({
   return (
     <div id="capitulos" className="relative scroll-mt-16 bg-neutral-950">
       <div className="lg:grid lg:grid-cols-5">
-        <div className="sticky top-16 z-0 h-[45vh] w-full lg:col-span-3 lg:h-[calc(100vh-4rem)]">
+        <div className="sticky top-16 z-20 h-[45vh] w-full overflow-hidden lg:z-0 lg:col-span-3 lg:h-[calc(100vh-4rem)]">
           <WorldMapLoader
             locations={locations}
             highlightContinent={chapter.continent}
