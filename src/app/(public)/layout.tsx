@@ -1,4 +1,5 @@
 import Link from "next/link";
+import MobileNav from "@/components/MobileNav";
 
 export default function PublicLayout({
   children,
@@ -32,6 +33,7 @@ export default function PublicLayout({
               Sobre
             </Link>
           </nav>
+          <MobileNav />
         </div>
       </header>
       <main className="flex-1">{children}</main>
