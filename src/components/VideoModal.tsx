@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 
 export default function VideoModal({
   embedUrl,
@@ -25,7 +26,10 @@ export default function VideoModal({
     };
   }, [onClose]);
 
-  return (
+  // Portal pro <body> — mesma razão do ReportDialog: evita que um
+  // ancestral com position sticky/fixed + z-index crie um stacking
+  // context que prenda este modal atrás de outros elementos da página.
+  return createPortal(
     <div
       ref={overlayRef}
       onClick={(event) => {
@@ -50,6 +54,7 @@ export default function VideoModal({
           allowFullScreen
         />
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

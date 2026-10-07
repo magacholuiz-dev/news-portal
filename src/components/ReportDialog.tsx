@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { getEmbedUrl } from "@/lib/video";
 
@@ -50,7 +51,14 @@ export default function ReportDialog({
     };
   }, [onClose]);
 
-  return (
+  // Portal direto pro <body>: sem isso, se o diálogo nascer dentro de um
+  // ancestral com position:sticky/fixed + z-index explícito (como o
+  // bloco do mapa no ChapterScroll), esse ancestral cria seu próprio
+  // stacking context e nenhum z-index interno — nem 1000 — consegue
+  // "escapar" dele pra ficar acima de outros elementos da página, como
+  // a coluna de texto ao lado. O portal evita esse problema de vez,
+  // renderizando fora dessa árvore.
+  return createPortal(
     <div
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
@@ -151,6 +159,7 @@ export default function ReportDialog({
           </Link>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
