@@ -52,6 +52,14 @@ export default function Hero() {
           className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(251,191,36,0.08),rgba(0,0,0,0)_55%)] animate-[heroFadeIn_1.6s_ease-out]"
         />
 
+        {/* Fundo vira bordô junto com a 2ª frase — mesma opacity da
+            frase (inline style, não classe com transition), pra não
+            reintroduzir o glitch de composição já resolvido no Hero. */}
+        <div
+          className="absolute inset-0"
+          style={{ backgroundColor: "#5c1322", opacity: phrase2Opacity }}
+        />
+
         <div className="relative z-10 flex h-full items-center justify-center px-6 text-center">
           <p
             style={{
