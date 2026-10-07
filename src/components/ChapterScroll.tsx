@@ -55,6 +55,16 @@ export default function ChapterScroll({
   const { activeStep, setStepRef } = useScrollSteps(CHAPTERS.length);
   const chapter = CHAPTERS[activeStep];
 
+  // Destaque (facho de luz) no território-âncora do continente ativo —
+  // ex.: Ucrânia na Europa. Na falta de um âncora marcado (continente
+  // ainda sem isAnchorEpisode definido), cai pro primeiro território
+  // daquele continente, pra sempre ter algo iluminado.
+  const regionLocations = locations.filter((l) => l.continent === chapter.continent);
+  const spotlightLocation =
+    regionLocations.find((l) => l.articles.some((a) => a.isAnchorEpisode)) ??
+    regionLocations[0] ??
+    null;
+
   return (
     <div id="capitulos" className="relative scroll-mt-16 bg-neutral-950">
       <div className="lg:grid lg:grid-cols-5">
@@ -63,6 +73,11 @@ export default function ChapterScroll({
             locations={locations}
             highlightContinent={chapter.continent}
             focusView={chapter.focusView}
+            spotlightTarget={
+              spotlightLocation
+                ? { lat: spotlightLocation.lat, lng: spotlightLocation.lng }
+                : null
+            }
           />
         </div>
 

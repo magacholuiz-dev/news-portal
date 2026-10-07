@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { LocationWithArticles, MapFocusView } from "./WorldMap";
+import type { LocationWithArticles, MapFocusView, SpotlightTarget } from "./WorldMap";
 
 const WorldMap = dynamic(() => import("./WorldMap"), {
   ssr: false,
@@ -18,12 +18,14 @@ export default function WorldMapLoader({
   focusView = null,
   selectedIds = null,
   onMarkerClick = null,
+  spotlightTarget = null,
 }: {
   locations: LocationWithArticles[];
   highlightContinent?: string | null;
   focusView?: MapFocusView | null;
   selectedIds?: number[] | null;
   onMarkerClick?: ((location: LocationWithArticles) => void) | null;
+  spotlightTarget?: SpotlightTarget | null;
 }) {
   return (
     <WorldMap
@@ -32,6 +34,7 @@ export default function WorldMapLoader({
       focusView={focusView}
       selectedIds={selectedIds}
       onMarkerClick={onMarkerClick}
+      spotlightTarget={spotlightTarget}
     />
   );
 }

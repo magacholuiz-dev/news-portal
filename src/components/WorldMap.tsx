@@ -27,6 +27,11 @@ export type MapFocusView = {
   zoom: number;
 };
 
+export type SpotlightTarget = {
+  lat: number;
+  lng: number;
+};
+
 // Trava o mapa a uma única volta do mundo (sem repetição horizontal), que
 // é a causa do bug em que marcadores "somem" ao rolar o mapa até ele dar
 // a volta: sem isso, a camada de tiles repete infinitamente, mas os
@@ -46,6 +51,7 @@ export default function WorldMap({
   focusView = null,
   selectedIds = null,
   onMarkerClick = null,
+  spotlightTarget = null,
 }: {
   locations: LocationWithArticles[];
   /** Quando definido, marcadores fora desse continente ficam esmaecidos
@@ -60,11 +66,18 @@ export default function WorldMap({
   /** Quando definido, clicar num marcador chama isso em vez de abrir o
    * ReportDialog (usado pelo modo comparação da Seção 05). */
   onMarkerClick?: ((location: LocationWithArticles) => void) | null;
+  /** Quando definido, desenha um "facho de luz" (vinheta escura com um
+   * furo claro) centrado nesse ponto — destaque visual do território
+   * ativo da Seção 03, além do esmaecimento dos outros marcadores. */
+  spotlightTarget?: SpotlightTarget | null;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maptilersdk.Map | null>(null);
   const [map, setMap] = useState<maptilersdk.Map | null>(null);
   const [openLocation, setOpenLocation] = useState<LocationWithArticles | null>(
+    null,
+  );
+  const [spotlightPos, setSpotlightPos] = useState<{ x: number; y: number } | null>(
     null,
   );
 
@@ -186,6 +199,30 @@ export default function WorldMap({
     });
   }, [map, focusView]);
 
+  // Mantém o "furo" do facho de luz grudado no território-alvo enquanto
+  // o mapa se move (inclusive durante a animação do flyTo acima) —
+  // reprojeta a cada evento `move`, igual ao que já fazemos pro avião
+  // animado do FlightPath, só que aqui a posição vem do próprio mapa
+  // (map.project) em vez de interpolação por scroll.
+  useEffect(() => {
+    if (!map || !spotlightTarget) {
+      setSpotlightPos(null);
+      return;
+    }
+
+    function updatePosition() {
+      if (!map || !spotlightTarget) return;
+      const point = map.project([spotlightTarget.lng, spotlightTarget.lat]);
+      setSpotlightPos({ x: point.x, y: point.y });
+    }
+
+    updatePosition();
+    map.on("move", updatePosition);
+    return () => {
+      map.off("move", updatePosition);
+    };
+  }, [map, spotlightTarget]);
+
   return (
     <>
       <style>{`
@@ -221,10 +258,23 @@ export default function WorldMap({
         }
       `}</style>
 
-      <div
-        ref={containerRef}
-        style={{ height: "100%", width: "100%", background: "#0e1420" }}
-      />
+      <div style={{ position: "relative", height: "100%", width: "100%" }}>
+        <div
+          ref={containerRef}
+          style={{ height: "100%", width: "100%", background: "#0e1420" }}
+        />
+
+        {spotlightPos && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              pointerEvents: "none",
+              background: `radial-gradient(circle at ${spotlightPos.x}px ${spotlightPos.y}px, rgba(245,201,75,0.22) 0px, rgba(245,201,75,0.07) 46px, rgba(0,0,0,0) 62px, rgba(0,0,0,0) 72px, rgba(10,10,10,0.45) 160px, rgba(10,10,10,0.6) 100%)`,
+            }}
+          />
+        )}
+      </div>
 
       {openLocation && (
         <ReportDialog
