@@ -216,7 +216,7 @@ export default function FlightPath({ stops }: { stops: RouteStop[] }) {
       </div>
 
       <div className="lg:grid lg:grid-cols-5">
-        <div className="relative z-0 h-[45vh] w-full lg:sticky lg:top-16 lg:col-span-3 lg:h-[calc(100vh-4rem)]">
+        <div className="sticky top-16 z-0 h-[45vh] w-full lg:col-span-3 lg:h-[calc(100vh-4rem)]">
           <div ref={containerRef} style={{ height: "100%", width: "100%", background: "#0e1420" }} />
         </div>
 
