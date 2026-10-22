@@ -39,6 +39,22 @@ export default function PublicLayout({
       <main className="flex-1">{children}</main>
       <footer className="border-t border-neutral-800 bg-neutral-950">
         <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-neutral-400 sm:px-6">
+          <div className="mb-6 border-b border-white/10 pb-6">
+            <p className="text-xs font-bold tracking-widest text-amber-400 uppercase">
+              Contato
+            </p>
+            <p className="mt-2 font-semibold text-white">
+              Luiz Fernando Magacho
+            </p>
+            <a
+              href="https://wa.me/5521993774357"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 inline-block text-neutral-300 hover:text-amber-400"
+            >
+              (21) 99377-4357
+            </a>
+          </div>
           <p>
             &copy; {new Date().getFullYear()} Portal Notícia. Todos os
             direitos reservados.
