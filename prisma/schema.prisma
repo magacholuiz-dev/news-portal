@@ -13,26 +13,28 @@ datasource db {
 }
 
 model Article {
-  id              Int           @id @default(autoincrement())
-  slug            String        @unique
-  title           String
-  subtitle        String?
-  excerpt         String?
-  heroImageUrl    String
-  videoUrl        String?
-  contentHtml     String
-  author          String?
-  category        String?
-  published       Boolean       @default(false)
-  publishedAt     DateTime?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  galleryItems    GalleryItem[]
-  locationId      Int?
-  location        Location?     @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  id                Int           @id @default(autoincrement())
+  slug              String        @unique
+  title             String
+  subtitle          String?
+  excerpt           String?
+  heroImageUrl      String
+  videoUrl          String?
+  // Minuto (em segundos) em que o vídeo deve abrir — "link no minuto exato".
+  videoStartSeconds Int?
+  contentHtml       String
+  author            String?
+  category          String?
+  published         Boolean       @default(false)
+  publishedAt       DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  galleryItems      GalleryItem[]
+  locationId        Int?
+  location          Location?     @relation(fields: [locationId], references: [id], onDelete: SetNull)
   // Marca esta reportagem como o episódio em vídeo que ancora o passo de
   // scroll do continente do seu Location (ver Location.continent).
-  isAnchorEpisode Boolean       @default(false)
+  isAnchorEpisode   Boolean       @default(false)
 
   @@index([locationId])
 }
@@ -50,14 +52,24 @@ model Location {
 
   // Campos do recorte jornalístico (scrollytelling / análise de dados).
   // Todos opcionais: um Location pode existir sem participar do recorte.
-  continent           String? // "Europa" | "Asia e Oriente Medio" | "Africa" | "Americas" | "Oceania"
-  continentOrder      Int? // 1-5, ordem dos passos de scroll (Seção 03)
-  displayOrder        Int? // Ordem_Exibicao da planilha (1-14, rota da Seção 04)
-  coveragePct         Float? // Proporcao_Cobertura_Pct
-  mediaAttentionClass String? // Clas_Atencao_Midia (ex: "Hipercoberta")
-  journalistNote      String? // Observacao_Jornalistica
-  accessCategory      String? // Categoria_Acesso (Visto Concedido / Zona de Risco / Entrada Barrada)
-  riskLevelRSF        String? // Nivel_Risco_RSF
+  continent             String? // "Europa" | "Asia e Oriente Medio" | "Africa" | "Americas" | "Oceania"
+  continentOrder        Int? // 1-5, ordem dos passos de scroll (Seção 03)
+  displayOrder          Int? // Ordem_Exibicao da planilha (1-14, rota da Seção 04)
+  coveragePct           Float? // Proporcao_Cobertura_Pct
+  mediaAttentionClass   String? // Clas_Atencao_Midia (ex: "Hipercoberta")
+  journalistNote        String? // Observacao_Jornalistica
+  // Bloco "Entrada" e dados da reportagem (modelo de 7 blocos).
+  entryPhrase           String? // frase que resume o conflito
+  victimsNumber         String? // número em destaque, ex: "12.000"
+  victimsLabel          String? // o que o número conta, ex: "civis mortos ou feridos"
+  conflictSummary       String? // "O conflito em um parágrafo" (até ~5 linhas)
+  journalistsKilled     Int? // jornalistas mortos nesse conflito
+  journalistsKilledNote String? // ex: "desde 2022"
+  statsSource           String? // fonte/data dos números (ONU, CPJ, RSF...)
+  fieldPhotos           FieldPhoto[]
+  quotes                Quote[]
+  accessCategory        String? // Categoria_Acesso (Visto Concedido / Zona de Risco / Entrada Barrada)
+  riskLevelRSF          String? // Nivel_Risco_RSF
 }
 
 // Uma miniatura da galeria da matéria: clicar nela abre o vídeo vinculado
@@ -81,4 +93,69 @@ model SiteSetting {
   key       String   @id
   value     String
   updatedAt DateTime @updatedAt
+}
+
+// Jornalista entrevistado: aparece na seção "Entrevistados", no perfil em
+// janela sobreposta e como autor das falas.
+model Journalist {
+  id               Int          @id @default(autoincrement())
+  name             String
+  slug             String       @unique
+  role             String? // ex: "Fotojornalista"
+  photoUrl         String?
+  bio              String? // perfil
+  conflictsCovered String? // conflitos que cobriu (texto livre)
+  displayOrder     Int          @default(0)
+  published        Boolean      @default(true)
+  createdAt        DateTime     @default(now())
+  photos           FieldPhoto[]
+  quotes           Quote[]
+}
+
+// Foto do jornalista em campo (galeria do perfil e da reportagem do
+// conflito, quando locationId está definido).
+model FieldPhoto {
+  id           Int        @id @default(autoincrement())
+  journalistId Int
+  journalist   Journalist @relation(fields: [journalistId], references: [id], onDelete: Cascade)
+  locationId   Int?
+  location     Location?  @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  imageUrl     String
+  caption      String?
+  credit       String?
+  displayOrder Int        @default(0)
+
+  @@index([journalistId])
+  @@index([locationId])
+}
+
+// Fala de um jornalista (aspas e/ou áudio). Uma única fala é reaproveitada
+// em vários lugares do site conforme o `kind`:
+//   FALA            — "A fala" da reportagem do território
+//   COBERTURA       — falas do bloco "Como é cobrir aqui"
+//   PODCAST         — mini podcast (áudios curtos) da reportagem
+//   QUEM_ESTEVE_LA  — fala curta (+ áudio de ~15s) no cartão da Análise de dados
+//   CAPITULO        — aspa grande do capítulo do continente (usa `continent`)
+// Só aparece no site quando `published` — o texto precisa ser transcrito
+// palavra por palavra do bruto antes (needsReview sinaliza o que falta).
+model Quote {
+  id                Int         @id @default(autoincrement())
+  kind              String
+  text              String
+  journalistId      Int?
+  journalist        Journalist? @relation(fields: [journalistId], references: [id], onDelete: SetNull)
+  locationId        Int?
+  location          Location?   @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  continent         String?
+  videoUrl          String?
+  videoStartSeconds Int?
+  audioUrl          String?
+  sourceNote        String? // referência no bruto, ex: "A2 40:26 a 47:51"
+  needsReview       Boolean     @default(true)
+  published         Boolean     @default(false)
+  displayOrder      Int         @default(0)
+  createdAt         DateTime    @default(now())
+
+  @@index([locationId])
+  @@index([journalistId])
 }

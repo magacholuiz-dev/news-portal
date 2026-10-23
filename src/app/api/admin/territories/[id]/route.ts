@@ -79,6 +79,37 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     data.lng = lng;
   }
 
+  for (const key of [
+    "entryPhrase",
+    "victimsNumber",
+    "victimsLabel",
+    "journalistsKilledNote",
+    "statsSource",
+  ] as const) {
+    const v = readOptionalString(body, key);
+    if (v !== undefined) data[key] = v;
+  }
+
+  const conflictSummary = readOptionalString(body, "conflictSummary");
+  if (conflictSummary !== undefined) {
+    if (conflictSummary && conflictSummary.length > 600) {
+      return NextResponse.json(
+        {
+          error:
+            "O parágrafo do conflito passa de 600 caracteres (o modelo pede até 5 linhas).",
+        },
+        { status: 400 },
+      );
+    }
+    data.conflictSummary = conflictSummary;
+  }
+
+  const journalistsKilled = readOptionalNumber(body, "journalistsKilled");
+  if (journalistsKilled !== undefined) {
+    data.journalistsKilled =
+      journalistsKilled === null ? null : Math.max(0, Math.trunc(journalistsKilled));
+  }
+
   const continent = readOptionalString(body, "continent");
   if (continent !== undefined) data.continent = continent;
 

@@ -1,5 +1,17 @@
 /** Converte uma URL de YouTube/Vimeo em uma URL de embed pronta para <iframe>. */
-export function getEmbedUrl(rawUrl: string): string | null {
+export function getEmbedUrl(
+  rawUrl: string,
+  startSeconds?: number | null,
+): string | null {
+  const base = buildEmbedUrl(rawUrl);
+  if (!base) return null;
+  if (!startSeconds || startSeconds <= 0) return base;
+  // YouTube usa `start` (segundos); Vimeo usa o fragmento #t=.
+  if (base.includes("vimeo.com")) return `${base}#t=${startSeconds}s`;
+  return `${base}&start=${startSeconds}`;
+}
+
+function buildEmbedUrl(rawUrl: string): string | null {
   let url: URL;
   try {
     url = new URL(rawUrl);
@@ -48,4 +60,11 @@ export function getEmbedUrl(rawUrl: string): string | null {
   }
 
   return null;
+}
+
+/** Miniatura de um vídeo do YouTube (null pra outros provedores). */
+export function getVideoThumbnail(rawUrl: string): string | null {
+  const embed = buildEmbedUrl(rawUrl);
+  const id = embed?.match(/youtube-nocookie\.com\/embed\/([^?&/]+)/)?.[1];
+  return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
 }

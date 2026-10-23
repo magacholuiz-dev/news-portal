@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
 import { sanitizeArticleHtml } from "@/lib/sanitize";
+import { parseTimecode } from "@/lib/time";
 import { slugify } from "@/lib/slug";
 import { parseGalleryItems } from "@/lib/gallery";
 import { findOrCreateLocation, parseLocationInput } from "@/lib/location";
@@ -66,6 +67,7 @@ export async function POST(request: NextRequest) {
       excerpt: body.excerpt?.trim() || null,
       heroImageUrl: body.heroImageUrl.trim(),
       videoUrl: body.videoUrl?.trim() || null,
+      videoStartSeconds: parseTimecode(body.videoStart),
       contentHtml: sanitizeArticleHtml(body.contentHtml ?? ""),
       author: body.author?.trim() || null,
       category: body.category?.trim() || null,

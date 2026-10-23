@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import * as maptilersdk from "@maptiler/sdk";
 import "@maptiler/sdk/dist/maptiler-sdk.css";
 import ReportDialog, { type ReportArticle } from "./ReportDialog";
+import type { QuoteDTO } from "@/lib/public-types";
 
 export type LocationWithArticles = {
   id: number;
@@ -19,6 +20,10 @@ export type LocationWithArticles = {
   journalistNote?: string | null;
   accessCategory?: string | null;
   riskLevelRSF?: string | null;
+  journalistsKilled?: number | null;
+  journalistsKilledNote?: string | null;
+  quote?: QuoteDTO | null;
+  reportSlug?: string | null;
   articles: ReportArticle[];
 };
 

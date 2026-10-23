@@ -35,7 +35,7 @@ export default function VideoModal({
       onClick={(event) => {
         if (event.target === overlayRef.current) onClose();
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 sm:p-8"
+      className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/90 p-4 sm:p-8"
     >
       <button
         type="button"

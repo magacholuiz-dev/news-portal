@@ -2,6 +2,8 @@
 
 import type { LocationWithArticles, MapFocusView } from "./WorldMap";
 import WorldMapLoader from "./WorldMapLoader";
+import ChapterQuote from "./ChapterQuote";
+import type { QuoteDTO } from "@/lib/public-types";
 import { useScrollSteps } from "@/hooks/useScrollSteps";
 
 export type Chapter = {
@@ -49,8 +51,11 @@ export const CHAPTERS: Chapter[] = [
 
 export default function ChapterScroll({
   locations,
+  chapterQuotes = {},
 }: {
   locations: LocationWithArticles[];
+  /** Aspa grande de cada capítulo, por continente. */
+  chapterQuotes?: Record<string, QuoteDTO>;
 }) {
   const { activeStep, setStepRef } = useScrollSteps(CHAPTERS.length);
   const chapter = CHAPTERS[activeStep];
@@ -98,6 +103,12 @@ export default function ChapterScroll({
                 <p className="mt-4 text-sm leading-relaxed text-neutral-300 sm:text-base">
                   {step.body}
                 </p>
+                {chapterQuotes[step.continent] && (
+                  <ChapterQuote
+                    quote={chapterQuotes[step.continent]}
+                    chapterTitle={step.title}
+                  />
+                )}
               </div>
             </div>
           ))}

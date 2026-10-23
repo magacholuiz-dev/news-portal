@@ -46,6 +46,7 @@ export default function MobileNav() {
             <Link
               key={link.href}
               href={link.href}
+              scroll={link.href === "/sobre" ? false : undefined}
               onClick={() => setOpen(false)}
               className="block border-b border-white/5 py-3 text-sm font-semibold tracking-wide text-neutral-200 uppercase last:border-b-0 hover:text-amber-400"
             >

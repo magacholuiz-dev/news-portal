@@ -8,8 +8,10 @@ export const dynamic = "force-dynamic";
 
 export default async function PublicLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   const siteTitle = await getSiteTitle();
   return (
@@ -35,7 +37,7 @@ export default async function PublicLayout({
             <Link href="/#explorar" className="hover:text-amber-400">
               Explorar
             </Link>
-            <Link href="/sobre" className="hover:text-amber-400">
+            <Link href="/sobre" scroll={false} className="hover:text-amber-400">
               Sobre
             </Link>
           </nav>
@@ -73,6 +75,9 @@ export default async function PublicLayout({
           </Link>
         </div>
       </footer>
+      {/* Janelas sobrepostas (reportagem, perfil, Sobre): rotas interceptadas
+          em @modal — a home continua montada por baixo. */}
+      {modal}
     </>
   );
 }

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { formatTimecode } from "@/lib/time";
 import AdminArticleForm from "@/components/admin/AdminArticleForm";
 
 export const dynamic = "force-dynamic";
@@ -32,6 +33,7 @@ export default async function EditArticlePage({ params }: PageParams) {
           author: article.author ?? "",
           heroImageUrl: article.heroImageUrl,
           videoUrl: article.videoUrl ?? "",
+          videoStart: formatTimecode(article.videoStartSeconds),
           contentHtml: article.contentHtml,
           published: article.published,
           isAnchorEpisode: article.isAnchorEpisode,

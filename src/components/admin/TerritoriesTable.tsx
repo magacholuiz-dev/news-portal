@@ -23,6 +23,13 @@ export type TerritoryRow = {
   journalistNote: string | null;
   accessCategory: string | null;
   riskLevelRSF: string | null;
+  entryPhrase: string | null;
+  victimsNumber: string | null;
+  victimsLabel: string | null;
+  conflictSummary: string | null;
+  journalistsKilled: number | null;
+  journalistsKilledNote: string | null;
+  statsSource: string | null;
 };
 
 const CONTINENT_OPTIONS = [
@@ -77,6 +84,13 @@ export default function TerritoriesTable({
           journalistNote: territory.journalistNote,
           accessCategory: territory.accessCategory,
           riskLevelRSF: territory.riskLevelRSF,
+          entryPhrase: territory.entryPhrase,
+          victimsNumber: territory.victimsNumber,
+          victimsLabel: territory.victimsLabel,
+          conflictSummary: territory.conflictSummary,
+          journalistsKilled: territory.journalistsKilled,
+          journalistsKilledNote: territory.journalistsKilledNote,
+          statsSource: territory.statsSource,
         }),
       });
       if (!res.ok) {
@@ -353,6 +367,83 @@ export default function TerritoriesTable({
                 />
               </label>
             </div>
+
+
+            <details className="mt-4 rounded-sm border border-neutral-200 bg-neutral-50 p-3">
+              <summary className="cursor-pointer text-xs font-semibold text-neutral-700">
+                Reportagem do território (entrada, conflito em um parágrafo, números)
+              </summary>
+              <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <label className="block text-xs sm:col-span-2">
+                  <span className="mb-1 block font-medium text-neutral-600">
+                    Entrada — frase que resume o conflito
+                  </span>
+                  <input
+                    value={territory.entryPhrase ?? ""}
+                    onChange={(e) => updateField(territory.id, "entryPhrase", e.target.value || null)}
+                    placeholder="ex: A guerra mais coberta do mundo"
+                    className="w-full rounded-sm border border-neutral-300 bg-white px-2 py-1.5 text-sm outline-none focus:border-neutral-900"
+                  />
+                </label>
+                <label className="block text-xs">
+                  <span className="mb-1 block font-medium text-neutral-600">Número de vítimas em destaque</span>
+                  <input
+                    value={territory.victimsNumber ?? ""}
+                    onChange={(e) => updateField(territory.id, "victimsNumber", e.target.value || null)}
+                    placeholder="ex: 12.000"
+                    className="w-full rounded-sm border border-neutral-300 bg-white px-2 py-1.5 text-sm outline-none focus:border-neutral-900"
+                  />
+                </label>
+                <label className="block text-xs">
+                  <span className="mb-1 block font-medium text-neutral-600">O que o número conta</span>
+                  <input
+                    value={territory.victimsLabel ?? ""}
+                    onChange={(e) => updateField(territory.id, "victimsLabel", e.target.value || null)}
+                    placeholder="ex: civis mortos ou feridos"
+                    className="w-full rounded-sm border border-neutral-300 bg-white px-2 py-1.5 text-sm outline-none focus:border-neutral-900"
+                  />
+                </label>
+                <label className="block text-xs sm:col-span-2">
+                  <span className="mb-1 block font-medium text-neutral-600">
+                    O conflito em um parágrafo (até ~5 linhas: quem luta, desde quando e por quê)
+                  </span>
+                  <textarea
+                    rows={4}
+                    maxLength={600}
+                    value={territory.conflictSummary ?? ""}
+                    onChange={(e) => updateField(territory.id, "conflictSummary", e.target.value || null)}
+                    className="w-full rounded-sm border border-neutral-300 bg-white px-2 py-1.5 text-sm outline-none focus:border-neutral-900"
+                  />
+                </label>
+                <label className="block text-xs">
+                  <span className="mb-1 block font-medium text-neutral-600">Jornalistas mortos</span>
+                  <input
+                    type="number"
+                    min={0}
+                    value={territory.journalistsKilled ?? ""}
+                    onChange={(e) => updateField(territory.id, "journalistsKilled", e.target.value === "" ? null : Number(e.target.value))}
+                    className="w-full rounded-sm border border-neutral-300 bg-white px-2 py-1.5 text-sm outline-none focus:border-neutral-900"
+                  />
+                </label>
+                <label className="block text-xs">
+                  <span className="mb-1 block font-medium text-neutral-600">Período dos jornalistas mortos</span>
+                  <input
+                    value={territory.journalistsKilledNote ?? ""}
+                    onChange={(e) => updateField(territory.id, "journalistsKilledNote", e.target.value || null)}
+                    placeholder="ex: desde 2022"
+                    className="w-full rounded-sm border border-neutral-300 bg-white px-2 py-1.5 text-sm outline-none focus:border-neutral-900"
+                  />
+                </label>
+                <label className="block text-xs sm:col-span-2">
+                  <span className="mb-1 block font-medium text-neutral-600">Fonte dos números (ONU, CPJ, RSF...)</span>
+                  <input
+                    value={territory.statsSource ?? ""}
+                    onChange={(e) => updateField(territory.id, "statsSource", e.target.value || null)}
+                    className="w-full rounded-sm border border-neutral-300 bg-white px-2 py-1.5 text-sm outline-none focus:border-neutral-900"
+                  />
+                </label>
+              </div>
+            </details>
 
             <div className="mt-4 border-t border-neutral-100 pt-3 text-sm">
               <p className="mb-1 text-xs font-medium text-neutral-600">

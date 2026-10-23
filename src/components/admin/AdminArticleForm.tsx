@@ -17,6 +17,7 @@ export type AdminArticleFormValues = {
   author: string;
   heroImageUrl: string;
   videoUrl: string;
+  videoStart: string;
   contentHtml: string;
   published: boolean;
   isAnchorEpisode: boolean;
@@ -34,6 +35,7 @@ const emptyValues: AdminArticleFormValues = {
   author: "",
   heroImageUrl: "",
   videoUrl: "",
+  videoStart: "",
   contentHtml: "",
   published: false,
   isAnchorEpisode: false,
@@ -302,6 +304,18 @@ export default function AdminArticleForm({
           <span className="mt-1 block text-xs text-neutral-400">
             Se preenchido, a foto de destaque abrirá esse vídeo em um popup.
           </span>
+        </label>
+
+        <label className="mt-4 block text-sm">
+          <span className="mb-1 block font-medium text-neutral-700">
+            Abrir o vídeo no minuto
+          </span>
+          <input
+            value={values.videoStart}
+            onChange={(e) => update("videoStart", e.target.value)}
+            placeholder="ex: 23:50 (vazio = começo)"
+            className="w-full max-w-xs rounded-sm border border-neutral-300 px-3 py-2 outline-none focus:border-neutral-900"
+          />
         </label>
 
         <label className="mt-4 flex items-start gap-2 text-sm">

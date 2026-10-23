@@ -80,6 +80,10 @@ export default function CoverageBarChart({ rows }: { rows: CoverageRow[] }) {
           🎬 Território com episódio em vídeo publicado.
         </p>
 
+        <p className="mt-10 font-serif text-xl leading-snug font-bold text-white sm:text-2xl">
+          Quanto menor a barra, mais difícil é chegar.
+        </p>
+
         {/* Alternativa acessível: mesma informação em lista, só pra leitor
             de tela (sr-only) — as barras acima não têm fallback textual
             navegável equivalente a uma lista. */}

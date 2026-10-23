@@ -53,6 +53,13 @@ export default async function AdminTerritoriesPage() {
             journalistNote: location.journalistNote,
             accessCategory: location.accessCategory,
             riskLevelRSF: location.riskLevelRSF,
+            entryPhrase: location.entryPhrase,
+            victimsNumber: location.victimsNumber,
+            victimsLabel: location.victimsLabel,
+            conflictSummary: location.conflictSummary,
+            journalistsKilled: location.journalistsKilled,
+            journalistsKilledNote: location.journalistsKilledNote,
+            statsSource: location.statsSource,
           }))}
         />
       )}

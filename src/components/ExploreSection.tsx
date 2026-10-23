@@ -138,6 +138,10 @@ export default function ExploreSection({
                 journalistNote: location.journalistNote ?? null,
                 accessCategory: location.accessCategory ?? null,
                 riskLevelRSF: location.riskLevelRSF ?? null,
+                journalistsKilled: location.journalistsKilled ?? null,
+                journalistsKilledNote: location.journalistsKilledNote ?? null,
+                quote: location.quote ?? null,
+                reportSlug: location.reportSlug ?? null,
               }}
             />
           ))}

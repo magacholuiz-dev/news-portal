@@ -1,3 +1,7 @@
+import Link from "next/link";
+import AudioClip from "./AudioClip";
+import type { QuoteDTO } from "@/lib/public-types";
+
 export type PassportCardData = {
   name: string;
   displayOrder: number | null;
@@ -6,6 +10,12 @@ export type PassportCardData = {
   journalistNote: string | null;
   accessCategory: string | null;
   riskLevelRSF: string | null;
+  journalistsKilled?: number | null;
+  journalistsKilledNote?: string | null;
+  /** "Quem esteve lá": fala curta (+ áudio de ~15 s) do jornalista. */
+  quote?: QuoteDTO | null;
+  /** Slug da reportagem do território (abre em janela sobreposta). */
+  reportSlug?: string | null;
 };
 
 // Cor do "carimbo" por categoria de acesso (aba gid=3804457 da
@@ -30,7 +40,7 @@ const STAMP_STYLES: Record<string, { label: string; className: string }> = {
   },
 };
 
-function Stamp({ accessCategory }: { accessCategory: string | null }) {
+export function Stamp({ accessCategory }: { accessCategory: string | null }) {
   const style = accessCategory ? STAMP_STYLES[accessCategory] : null;
   return (
     <span
@@ -77,12 +87,55 @@ export default function PassportCard({ territory }: { territory: PassportCardDat
             {territory.riskLevelRSF ?? "Dado pendente"}
           </dd>
         </div>
+        <div className="flex justify-between gap-3">
+          <dt className="text-neutral-500">Jornalistas mortos</dt>
+          <dd className="text-right font-semibold text-white">
+            {territory.journalistsKilled != null
+              ? territory.journalistsKilled
+              : "Dado pendente"}
+            {territory.journalistsKilled != null &&
+              territory.journalistsKilledNote && (
+                <span className="ml-1 text-xs font-normal text-neutral-500">
+                  {territory.journalistsKilledNote}
+                </span>
+              )}
+          </dd>
+        </div>
       </dl>
 
       {territory.journalistNote && (
         <p className="mt-3 border-t border-dashed border-white/20 pt-3 text-xs leading-relaxed text-neutral-400">
           {territory.journalistNote}
         </p>
+      )}
+
+      {territory.quote && (
+        <div className="mt-3 border-t border-dashed border-white/20 pt-3">
+          <p className="mb-1 text-[10px] font-bold tracking-widest text-amber-400 uppercase">
+            Quem esteve lá
+          </p>
+          <p className="text-sm leading-snug text-neutral-200">
+            &ldquo;{territory.quote.text}&rdquo;
+          </p>
+          <p className="mt-2 flex flex-wrap items-center gap-3 text-xs text-neutral-500">
+            {territory.quote.journalistName && (
+              <span>{territory.quote.journalistName}</span>
+            )}
+            {territory.quote.audioUrl && (
+              <AudioClip src={territory.quote.audioUrl} label="Ouvir 15s" />
+            )}
+          </p>
+        </div>
+      )}
+
+      {territory.reportSlug && (
+        <Link
+          href={`/article/${territory.reportSlug}`}
+          scroll={false}
+          className="mt-4 inline-block text-xs font-bold tracking-wide text-amber-400 uppercase hover:underline"
+        >
+          Ler a reportagem &rarr;
+        </Link>
       )}
     </div>
   );

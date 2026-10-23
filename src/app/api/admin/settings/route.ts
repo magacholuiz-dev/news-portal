@@ -2,14 +2,21 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
-import { DEFAULT_SITE_TITLE, getSiteTitle } from "@/lib/settings";
+import { getSiteSettings, SETTING_KEYS } from "@/lib/settings";
+
+const MAX_LEN: Record<string, number> = {
+  siteTitle: 80,
+  heroTrailerUrl: 300,
+  closingQuoteText: 400,
+  closingQuoteAuthor: 120,
+};
 
 export async function GET(request: NextRequest) {
   const session = await requireAdmin(request);
   if (!session) {
     return NextResponse.json({ error: "Não autorizado." }, { status: 401 });
   }
-  return NextResponse.json({ siteTitle: await getSiteTitle() });
+  return NextResponse.json(await getSiteSettings());
 }
 
 export async function PUT(request: NextRequest) {
@@ -19,26 +26,37 @@ export async function PUT(request: NextRequest) {
   }
 
   const body = await request.json().catch(() => null);
-  const siteTitle =
-    typeof body?.siteTitle === "string" ? body.siteTitle.trim() : "";
-  if (!siteTitle) {
+  if (!body || typeof body !== "object") {
+    return NextResponse.json({ error: "Corpo inválido." }, { status: 400 });
+  }
+
+  // O título é obrigatório; os demais campos podem ser esvaziados.
+  if ("siteTitle" in body && !String(body.siteTitle ?? "").trim()) {
     return NextResponse.json(
       { error: "O título não pode ficar vazio." },
       { status: 400 },
     );
   }
-  if (siteTitle.length > 80) {
-    return NextResponse.json(
-      { error: "O título pode ter no máximo 80 caracteres." },
-      { status: 400 },
-    );
+
+  for (const key of SETTING_KEYS) {
+    if (!(key in body)) continue;
+    const value = String(body[key] ?? "").trim();
+    if (value.length > MAX_LEN[key]) {
+      return NextResponse.json(
+        { error: `"${key}" passa de ${MAX_LEN[key]} caracteres.` },
+        { status: 400 },
+      );
+    }
+    if (value) {
+      await prisma.siteSetting.upsert({
+        where: { key },
+        update: { value },
+        create: { key, value },
+      });
+    } else {
+      await prisma.siteSetting.deleteMany({ where: { key } });
+    }
   }
 
-  await prisma.siteSetting.upsert({
-    where: { key: "siteTitle" },
-    update: { value: siteTitle },
-    create: { key: "siteTitle", value: siteTitle },
-  });
-
-  return NextResponse.json({ siteTitle: siteTitle || DEFAULT_SITE_TITLE });
+  return NextResponse.json(await getSiteSettings());
 }
