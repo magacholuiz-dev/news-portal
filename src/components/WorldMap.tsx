@@ -112,7 +112,7 @@ export default function WorldMap({
         container,
         apiKey: process.env.NEXT_PUBLIC_MAPTILER_KEY,
         style: maptilersdk.MapStyle.STREETS.DARK,
-        language: maptilersdk.Language.ENGLISH,
+        language: maptilersdk.Language.PORTUGUESE,
         center: [10, 20],
         zoom: 1.3,
         minZoom: 1.3,

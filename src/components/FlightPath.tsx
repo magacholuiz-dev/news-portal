@@ -52,7 +52,7 @@ export default function FlightPath({ stops }: { stops: RouteStop[] }) {
         container,
         apiKey: process.env.NEXT_PUBLIC_MAPTILER_KEY,
         style: maptilersdk.MapStyle.STREETS.DARK,
-        language: maptilersdk.Language.ENGLISH,
+        language: maptilersdk.Language.PORTUGUESE,
         center: [20, 15],
         zoom: 1.5,
         minZoom: 1,
