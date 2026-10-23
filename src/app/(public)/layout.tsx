@@ -50,7 +50,7 @@ export default async function PublicLayout({
               Contato
             </p>
             <p className="mt-2 font-semibold text-white">
-              Luiz Fernando Magacho
+              Tecnologia: Magacho LTDA
             </p>
             <a
               href="https://wa.me/5521993774357"
