@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="12" fill="#0a0a0a"/>
+  <!-- "P" serifado: haste, serifas de topo e base, bojo vazado -->
+  <path fill="#f5c94b" fill-rule="evenodd" d="
+    M14 10 H37 C47 10 53 16 53 24.5 C53 33 47 39 37 39 H31 V42 H36 V46 H14 V42 H19 V14 H14 Z
+    M31 15 V34 H36.5 C41 34 44 30.5 44 24.5 C44 18.5 41 15 36.5 15 Z"/>
+  <!-- filete de rodapé, como o cabeçalho de um jornal -->
+  <rect x="12" y="51" width="40" height="3" fill="#f5c94b"/>
+</svg>

@@ -1,17 +1,19 @@
 import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
+import { getSiteTitle } from "@/lib/settings";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const siteTitle = await getSiteTitle();
   return (
     <div>
       <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-4 py-4 sm:px-8">
         <div className="flex items-center gap-6">
           <Link href="/admin" className="font-serif text-xl font-black">
-            Admin · Portal Notícia
+            Admin · {siteTitle}
           </Link>
           <nav className="hidden gap-4 text-sm font-medium text-neutral-600 sm:flex">
             <Link href="/admin" className="hover:text-neutral-900">
@@ -24,7 +26,10 @@ export default function DashboardLayout({
               Nova matéria
             </Link>
             <Link href="/admin/territories" className="hover:text-neutral-900">
-              Territórios
+              Pontos do mapa
+            </Link>
+            <Link href="/admin/settings" className="hover:text-neutral-900">
+              Configurações
             </Link>
           </nav>
         </div>

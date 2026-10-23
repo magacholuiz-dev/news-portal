@@ -74,3 +74,11 @@ model GalleryItem {
 
   @@index([articleId])
 }
+
+// Configurações editáveis pelo admin (chave/valor). Hoje só o título do
+// site ("siteTitle"); novas chaves entram sem precisar de migração.
+model SiteSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

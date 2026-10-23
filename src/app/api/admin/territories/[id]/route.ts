@@ -55,6 +55,30 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
   const data: Record<string, unknown> = {};
 
+  const name = readOptionalString(body, "name");
+  if (name) data.name = name; // nome é obrigatório: vazio é ignorado
+
+  const lat = readOptionalNumber(body, "lat");
+  if (lat !== undefined && lat !== null) {
+    if (lat < -90 || lat > 90) {
+      return NextResponse.json(
+        { error: "Latitude deve estar entre -90 e 90." },
+        { status: 400 },
+      );
+    }
+    data.lat = lat;
+  }
+  const lng = readOptionalNumber(body, "lng");
+  if (lng !== undefined && lng !== null) {
+    if (lng < -180 || lng > 180) {
+      return NextResponse.json(
+        { error: "Longitude deve estar entre -180 e 180." },
+        { status: 400 },
+      );
+    }
+    data.lng = lng;
+  }
+
   const continent = readOptionalString(body, "continent");
   if (continent !== undefined) data.continent = continent;
 
@@ -88,4 +112,24 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   });
 
   return NextResponse.json({ location });
+}
+
+/** Exclui o ponto do mapa junto com as matérias vinculadas a ele. */
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  const session = await requireAdmin(request);
+  if (!session) {
+    return NextResponse.json({ error: "Não autorizado." }, { status: 401 });
+  }
+
+  const { id } = await params;
+  const locationId = Number(id);
+
+  // Article.locationId é SetNull: sem apagar antes, as matérias ficariam
+  // soltas (sem ponto) no banco em vez de saírem junto com o ponto.
+  await prisma.$transaction([
+    prisma.article.deleteMany({ where: { locationId } }),
+    prisma.location.deleteMany({ where: { id: locationId } }),
+  ]);
+
+  return NextResponse.json({ ok: true });
 }

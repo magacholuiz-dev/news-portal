@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
   }
 
   const galleryItems = parseGalleryItems(body.galleryItems);
-  const locationInput = parseLocationInput(body.location);
+  const locationInput = parseLocationInput(body.location, body.locationContinent);
   const location = locationInput
     ? await findOrCreateLocation(locationInput)
     : null;

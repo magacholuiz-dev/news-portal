@@ -1,11 +1,17 @@
 import Link from "next/link";
 import MobileNav from "@/components/MobileNav";
+import { getSiteTitle } from "@/lib/settings";
 
-export default function PublicLayout({
+// Lê o título do site no banco a cada request: sem isso páginas estáticas
+// (como /sobre) congelariam o título do momento do build.
+export const dynamic = "force-dynamic";
+
+export default async function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const siteTitle = await getSiteTitle();
   return (
     <>
       <header className="sticky top-0 z-[600] border-b border-white/10 bg-neutral-950/95">
@@ -14,7 +20,7 @@ export default function PublicLayout({
             href="/"
             className="font-serif text-lg font-black tracking-tight text-white sm:text-xl"
           >
-            PORTAL NOTÍCIA
+            {siteTitle.toUpperCase()}
           </Link>
           <nav className="hidden gap-5 text-xs font-semibold tracking-wide text-neutral-200 uppercase sm:flex">
             <Link href="/#hero" className="hover:text-amber-400">
@@ -56,7 +62,7 @@ export default function PublicLayout({
             </a>
           </div>
           <p>
-            &copy; {new Date().getFullYear()} Portal Notícia. Todos os
+            &copy; {new Date().getFullYear()} {siteTitle}. Todos os
             direitos reservados.
           </p>
           <Link

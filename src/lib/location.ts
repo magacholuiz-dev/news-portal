@@ -1,10 +1,18 @@
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/slug";
 
-export type LocationInput = { name: string; lat: number; lng: number };
+export type LocationInput = {
+  name: string;
+  lat: number;
+  lng: number;
+  continent?: string | null;
+};
 
 /** Lê o campo `location` vindo do formulário admin; retorna null se ausente/inválido. */
-export function parseLocationInput(raw: unknown): LocationInput | null {
+export function parseLocationInput(
+  raw: unknown,
+  continent?: unknown,
+): LocationInput | null {
   if (!raw || typeof raw !== "object") return null;
   const { name, lat, lng } = raw as Record<string, unknown>;
   if (
@@ -17,7 +25,15 @@ export function parseLocationInput(raw: unknown): LocationInput | null {
   ) {
     return null;
   }
-  return { name, lat, lng };
+  return {
+    name,
+    lat,
+    lng,
+    continent:
+      typeof continent === "string" && continent.trim()
+        ? continent.trim()
+        : null,
+  };
 }
 
 const COORD_PRECISION = 3; // ~100m, o suficiente pra reaproveitar o mesmo local
@@ -33,7 +49,16 @@ export async function findOrCreateLocation(input: LocationInput) {
   const lng = roundCoord(input.lng);
 
   const existing = await prisma.location.findFirst({ where: { lat, lng } });
-  if (existing) return existing;
+  if (existing) {
+    // Mantém o continente em dia quando o admin escolhe um no formulário.
+    if (input.continent && input.continent !== existing.continent) {
+      return prisma.location.update({
+        where: { id: existing.id },
+        data: { continent: input.continent },
+      });
+    }
+    return existing;
+  }
 
   const baseSlug = slugify(input.name) || `local-${Date.now()}`;
   let slug = baseSlug;
@@ -44,6 +69,12 @@ export async function findOrCreateLocation(input: LocationInput) {
   }
 
   return prisma.location.create({
-    data: { name: input.name.trim(), slug, lat, lng },
+    data: {
+      name: input.name.trim(),
+      slug,
+      lat,
+      lng,
+      continent: input.continent ?? null,
+    },
   });
 }

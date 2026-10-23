@@ -22,6 +22,7 @@ export type AdminArticleFormValues = {
   isAnchorEpisode: boolean;
   galleryItems: GalleryItemValue[];
   location: LocationValue | null;
+  locationContinent: string;
 };
 
 const emptyValues: AdminArticleFormValues = {
@@ -38,7 +39,16 @@ const emptyValues: AdminArticleFormValues = {
   isAnchorEpisode: false,
   galleryItems: [],
   location: null,
+  locationContinent: "",
 };
+
+const CONTINENT_OPTIONS = [
+  { value: "Europa", label: "Europa" },
+  { value: "Asia e Oriente Medio", label: "Ásia e Oriente Médio" },
+  { value: "Africa", label: "África" },
+  { value: "Americas", label: "Américas" },
+  { value: "Oceania", label: "Oceania" },
+];
 
 export default function AdminArticleForm({
   initialValues,
@@ -218,8 +228,32 @@ export default function AdminArticleForm({
         />
         <p className="mt-2 text-xs text-neutral-400">
           Se definida, essa reportagem aparece como um marcador no mapa da
-          home.
+          home — este é o &ldquo;ponto no mapa&rdquo; da notícia.
         </p>
+        {values.location && (
+          <label className="mt-4 block text-sm">
+            <span className="mb-1 block font-medium text-neutral-700">
+              Continente do ponto
+            </span>
+            <select
+              value={values.locationContinent}
+              onChange={(e) => update("locationContinent", e.target.value)}
+              className="w-full max-w-xs rounded-sm border border-neutral-300 px-3 py-2 outline-none focus:border-neutral-900"
+            >
+              <option value="">— escolha —</option>
+              {CONTINENT_OPTIONS.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+            <span className="mt-1 block text-xs text-neutral-400">
+              Define em qual capítulo do mapa esse ponto acende. Sem
+              continente, ele aparece no mapa mas fica sempre esmaecido nos
+              capítulos.
+            </span>
+          </label>
+        )}
       </div>
 
       <div className="border-t border-neutral-200 pt-6">

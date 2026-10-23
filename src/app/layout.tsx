@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Merriweather } from "next/font/google";
 import "./globals.css";
+import { getSiteTitle } from "@/lib/settings";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,10 +19,15 @@ const merriweather = Merriweather({
   weight: ["700", "900"],
 });
 
-export const metadata: Metadata = {
-  title: "Portal Notícia",
-  description: "Notícias e reportagens especiais",
-};
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const siteTitle = await getSiteTitle();
+  return {
+    title: { default: siteTitle, template: `%s | ${siteTitle}` },
+    description: "Notícias e reportagens especiais",
+  };
+}
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

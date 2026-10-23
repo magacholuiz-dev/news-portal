@@ -41,6 +41,7 @@ export default async function EditArticlePage({ params }: PageParams) {
             videoUrl: item.videoUrl ?? "",
             caption: item.caption ?? "",
           })),
+          locationContinent: article.location?.continent ?? "",
           location: article.location
             ? {
                 name: article.location.name,

@@ -90,7 +90,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   const willBePublished = Boolean(body.published);
 
   const galleryItems = parseGalleryItems(body.galleryItems);
-  const locationInput = parseLocationInput(body.location);
+  const locationInput = parseLocationInput(body.location, body.locationContinent);
   const location = locationInput
     ? await findOrCreateLocation(locationInput)
     : null;

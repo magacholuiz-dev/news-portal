@@ -1,10 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+
+export type TerritoryArticle = {
+  id: number;
+  title: string;
+  published: boolean;
+};
 
 export type TerritoryRow = {
   id: number;
   name: string;
+  lat: number;
+  lng: number;
+  articles: TerritoryArticle[];
   continent: string | null;
   continentOrder: number | null;
   displayOrder: number | null;
@@ -56,6 +66,9 @@ export default function TerritoriesTable({
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          name: territory.name,
+          lat: territory.lat,
+          lng: territory.lng,
           continent: territory.continent,
           continentOrder: territory.continentOrder,
           displayOrder: territory.displayOrder,
@@ -72,6 +85,30 @@ export default function TerritoriesTable({
       }
       setSavedId(territory.id);
       setTimeout(() => setSavedId((prev) => (prev === territory.id ? null : prev)), 2000);
+    } catch {
+      setErrorId(territory.id);
+    } finally {
+      setSavingId(null);
+    }
+  }
+
+  async function handleDelete(territory: TerritoryRow) {
+    const n = territory.articles.length;
+    const aviso =
+      n > 0
+        ? `Excluir o ponto "${territory.name}" e as ${n} matéria(s) vinculada(s) a ele? Essa ação não pode ser desfeita.`
+        : `Excluir o ponto "${territory.name}"? Essa ação não pode ser desfeita.`;
+    if (!confirm(aviso)) return;
+    setSavingId(territory.id);
+    try {
+      const res = await fetch(`/api/admin/territories/${territory.id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setTerritories((prev) => prev.filter((t) => t.id !== territory.id));
+      } else {
+        setErrorId(territory.id);
+      }
     } catch {
       setErrorId(territory.id);
     } finally {
@@ -112,10 +149,61 @@ export default function TerritoriesTable({
                 >
                   {savingId === territory.id ? "Salvando..." : "Salvar"}
                 </button>
+                <button
+                  type="button"
+                  disabled={savingId === territory.id}
+                  onClick={() => handleDelete(territory)}
+                  className="rounded-sm border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
+                >
+                  Excluir
+                </button>
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <label className="block text-xs sm:col-span-2">
+                <span className="mb-1 block font-medium text-neutral-600">
+                  Nome do ponto
+                </span>
+                <input
+                  value={territory.name}
+                  onChange={(e) =>
+                    updateField(territory.id, "name", e.target.value)
+                  }
+                  className="w-full rounded-sm border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-neutral-900"
+                />
+              </label>
+
+              <label className="block text-xs">
+                <span className="mb-1 block font-medium text-neutral-600">
+                  Latitude
+                </span>
+                <input
+                  type="number"
+                  step="any"
+                  value={territory.lat}
+                  onChange={(e) =>
+                    updateField(territory.id, "lat", Number(e.target.value))
+                  }
+                  className="w-full rounded-sm border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-neutral-900"
+                />
+              </label>
+
+              <label className="block text-xs">
+                <span className="mb-1 block font-medium text-neutral-600">
+                  Longitude
+                </span>
+                <input
+                  type="number"
+                  step="any"
+                  value={territory.lng}
+                  onChange={(e) =>
+                    updateField(territory.id, "lng", Number(e.target.value))
+                  }
+                  className="w-full rounded-sm border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-neutral-900"
+                />
+              </label>
+
               <label className="block text-xs">
                 <span className="mb-1 block font-medium text-neutral-600">
                   Continente (passo do scroll)
@@ -264,6 +352,41 @@ export default function TerritoriesTable({
                   className="w-full rounded-sm border border-neutral-300 px-2 py-1.5 text-sm outline-none focus:border-neutral-900"
                 />
               </label>
+            </div>
+
+            <div className="mt-4 border-t border-neutral-100 pt-3 text-sm">
+              <p className="mb-1 text-xs font-medium text-neutral-600">
+                Notícias deste ponto
+              </p>
+              {territory.articles.length === 0 ? (
+                <p className="text-xs text-neutral-400">
+                  Nenhuma notícia vinculada — o ponto não aparece no mapa
+                  até ter uma matéria publicada.
+                </p>
+              ) : (
+                <ul className="space-y-1">
+                  {territory.articles.map((a) => (
+                    <li key={a.id} className="flex items-center gap-2">
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                          a.published
+                            ? "bg-green-100 text-green-700"
+                            : "bg-neutral-100 text-neutral-600"
+                        }`}
+                      >
+                        {a.published ? "Publicada" : "Rascunho"}
+                      </span>
+                      <span className="truncate text-neutral-800">{a.title}</span>
+                      <Link
+                        href={`/admin/articles/${a.id}/edit`}
+                        className="ml-auto shrink-0 text-xs font-semibold text-neutral-600 hover:text-neutral-900"
+                      >
+                        Editar notícia &rarr;
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         ))}
