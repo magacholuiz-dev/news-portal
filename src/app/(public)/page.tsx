@@ -16,8 +16,9 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const [locations, articles, quoteRows, journalists, settings] = await Promise.all([
+    // Todos os pontos: a Análise de dados mostra os 14 territórios mesmo sem
+    // matéria publicada. Os mapas de notícias filtram abaixo (mapLocations).
     prisma.location.findMany({
-      where: { articles: { some: { published: true } } },
       include: {
         articles: {
           where: { published: true },
@@ -146,8 +147,11 @@ export default async function HomePage() {
         <TrailerSection videoUrl={settings.heroTrailerUrl} title={settings.siteTitle} />
       )}
 
-      {/* O mapa sempre aparece; sem ponto publicado ele fica só sem marcadores. */}
-      <ChapterScroll locations={mapLocations} chapterQuotes={chapterQuotes} />
+      {/* Os mapas de notícias (Capítulos e Explorar) vão até onde está a
+          notícia: sem nenhuma matéria publicada com ponto, não aparecem. */}
+      {mapLocations.length > 0 && (
+        <ChapterScroll locations={mapLocations} chapterQuotes={chapterQuotes} />
+      )}
 
       {routeStops.length > 0 && (
         <>
@@ -156,7 +160,7 @@ export default async function HomePage() {
         </>
       )}
 
-      <ExploreSection locations={mapLocations} />
+      {mapLocations.length > 0 && <ExploreSection locations={mapLocations} />}
 
       {journalists.length > 0 ? (
         <JournalistsSection

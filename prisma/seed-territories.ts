@@ -1,19 +1,9 @@
 /**
- * Loop 0 do rebuild em scrollytelling: limpa o banco e recria com os 14
- * territórios REAIS da planilha do projeto (cobertura, classificação de
- * atenção midiática e observação jornalística vêm da aba "Dados - site
- * (tcc)"; categoria de acesso e nível de risco RSF vêm da aba
- * gid=3804457, coluna Status_Carimbo/Nivel_Risco_RSF — Status_Carimbo
- * traz "CATEGORIA / detalhe", uso só a categoria, que bate exatamente
- * com os 3+1 carimbos já desenhados em PassportCard.tsx).
- *
- * O texto de cada reportagem (contentHtml) é placeholder — monta um
- * resumo a partir dos dados reais da planilha, não é a reportagem final
- * que a equipe vai escrever. As imagens continuam sendo stock (picsum)
- * até ter fotos reais, mas o vídeo de cada território já é uma
- * reportagem em vídeo real de telejornal internacional (BBC/Al Jazeera)
- * sobre aquele conflito/crise específica — placeholder editorial, não
- * imagem genérica, até os 5 episódios reais da equipe ficarem prontos.
+ * Cria os 14 territórios da planilha do projeto (cobertura, classificação
+ * de atenção midiática, observação jornalística, categoria de acesso e
+ * nível de risco RSF). Não apaga nada e NÃO gera matérias: as notícias de
+ * cada território são cadastradas pelo portal administrativo. Territórios
+ * que já existem (mesmo slug) são mantidos como estão.
  */
 import "dotenv/config";
 import { PrismaClient } from "../src/generated/prisma/client";
@@ -312,51 +302,21 @@ const TERRITORIES: Territory[] = [
   },
 ];
 
-function buildArticle(territory: Territory) {
-  const countryName = territory.name.split(",").slice(1).join(",").trim() || territory.name;
-  const title = territory.isAnchorEpisode
-    ? `${countryName}: ${territory.episodeTheme}`
-    : `${countryName}: panorama da cobertura jornalística`;
-
-  const contentHtml = `
-    <p><em>Reportagem de exemplo — conteúdo placeholder até a produção do episódio/reportagem real pela equipe.</em></p>
-    <p>${territory.journalistNote}</p>
-    <p>Segundo o levantamento do projeto, a cobertura internacional sobre este território representa aproximadamente <strong>${territory.coveragePct}%</strong> do volume de atenção midiática mapeado entre os 14 territórios analisados, classificada como <strong>${territory.mediaAttentionClass}</strong>.</p>
-    ${
-      territory.isAnchorEpisode
-        ? `<h2>Sobre o episódio</h2><p>Este território é a âncora em vídeo da região ${territory.continent.replace("e Oriente Medio", "e Oriente Médio")} nesta série documental.</p>`
-        : ""
-    }
-  `.trim();
-
-  return {
-    slug: slugify(`${territory.id}-${territory.name}`),
-    title,
-    subtitle: territory.isAnchorEpisode
-      ? territory.episodeTheme
-      : `Cobertura midiática: ${territory.mediaAttentionClass.toLowerCase()}`,
-    excerpt: territory.journalistNote,
-    heroImageUrl: `https://picsum.photos/seed/${territory.id.toLowerCase()}/1280/720`,
-    videoUrl: territory.videoUrl,
-    category: territory.continent,
-    author: "Equipe Documental",
-    contentHtml,
-    isAnchorEpisode: territory.isAnchorEpisode,
-  };
-}
-
 async function main() {
-  console.log("Limpando banco de dados...");
-  await prisma.galleryItem.deleteMany({});
-  await prisma.article.deleteMany({});
-  await prisma.location.deleteMany({});
-  console.log("Banco limpo.");
-
+  // Não apaga NADA: só cria os territórios que ainda não existem (pelo
+  // slug) e pula os que já existem, preservando o que foi editado no
+  // admin. Matérias não são geradas aqui — são cadastradas pelo portal.
   for (const territory of TERRITORIES) {
-    const location = await prisma.location.create({
+    const slug = slugify(territory.name);
+    const existing = await prisma.location.findUnique({ where: { slug } });
+    if (existing) {
+      console.log(`Já existe, mantido: ${territory.id} — ${territory.name}`);
+      continue;
+    }
+    await prisma.location.create({
       data: {
         name: territory.name,
-        slug: slugify(territory.name),
+        slug,
         lat: territory.lat,
         lng: territory.lng,
         continent: territory.continent,
@@ -369,35 +329,9 @@ async function main() {
         riskLevelRSF: territory.riskLevelRSF,
       },
     });
-
-    const article = buildArticle(territory);
-
-    await prisma.article.create({
-      data: {
-        slug: article.slug,
-        title: article.title,
-        subtitle: article.subtitle,
-        excerpt: article.excerpt,
-        heroImageUrl: article.heroImageUrl,
-        videoUrl: article.videoUrl,
-        contentHtml: article.contentHtml,
-        author: article.author,
-        category: article.category,
-        published: true,
-        publishedAt: new Date(),
-        locationId: location.id,
-        isAnchorEpisode: article.isAnchorEpisode,
-      },
-    });
-
-    console.log(
-      `Criado: ${territory.id} — ${territory.name} (${territory.continent}${
-        territory.isAnchorEpisode ? ", EPISÓDIO-ÂNCORA" : ""
-      })`,
-    );
+    console.log(`Criado: ${territory.id} — ${territory.name} (${territory.continent})`);
   }
-
-  console.log("Concluído: 14 territórios criados.");
+  console.log("Concluído (nada foi apagado).");
 }
 
 main()
