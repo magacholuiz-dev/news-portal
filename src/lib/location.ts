@@ -48,7 +48,17 @@ export async function findOrCreateLocation(input: LocationInput) {
   const lat = roundCoord(input.lat);
   const lng = roundCoord(input.lng);
 
-  const existing = await prisma.location.findFirst({ where: { lat, lng } });
+  // Tolerância (~110 m) em vez de igualdade exata: as coordenadas já salvas
+  // (ex.: do seed, com 4 casas) não batem com as arredondadas em 3 casas, e
+  // a comparação exata criava um ponto duplicado a cada edição de matéria.
+  const TOLERANCE = 0.001;
+  const existing = await prisma.location.findFirst({
+    where: {
+      lat: { gte: lat - TOLERANCE, lte: lat + TOLERANCE },
+      lng: { gte: lng - TOLERANCE, lte: lng + TOLERANCE },
+    },
+    orderBy: { id: "asc" },
+  });
   if (existing) {
     // Mantém o continente em dia quando o admin escolhe um no formulário.
     if (input.continent && input.continent !== existing.continent) {

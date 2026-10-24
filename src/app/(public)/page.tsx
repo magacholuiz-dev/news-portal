@@ -146,20 +146,8 @@ export default async function HomePage() {
         <TrailerSection videoUrl={settings.heroTrailerUrl} title={settings.siteTitle} />
       )}
 
-      {mapLocations.length === 0 ? (
-        <div
-          id="capitulos"
-          className="flex h-[75vh] min-h-[500px] scroll-mt-16 items-center justify-center bg-neutral-900 px-4 text-center text-sm text-neutral-400"
-        >
-          Nenhuma reportagem com localização publicada ainda. Acesse{" "}
-          <a href="/admin/login" className="ml-1 text-white underline">
-            /admin/login
-          </a>{" "}
-          para adicionar a primeira.
-        </div>
-      ) : (
-        <ChapterScroll locations={mapLocations} chapterQuotes={chapterQuotes} />
-      )}
+      {/* O mapa sempre aparece; sem ponto publicado ele fica só sem marcadores. */}
+      <ChapterScroll locations={mapLocations} chapterQuotes={chapterQuotes} />
 
       {routeStops.length > 0 && (
         <>
@@ -168,7 +156,7 @@ export default async function HomePage() {
         </>
       )}
 
-      {mapLocations.length > 0 && <ExploreSection locations={mapLocations} />}
+      <ExploreSection locations={mapLocations} />
 
       {journalists.length > 0 ? (
         <JournalistsSection
