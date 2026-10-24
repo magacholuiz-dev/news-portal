@@ -6,7 +6,7 @@ export default function TrailerSection({
   videoUrl,
   title,
 }: {
-  videoUrl: string | null;
+  videoUrl: string;
   title: string;
 }) {
   return (
@@ -15,17 +15,11 @@ export default function TrailerSection({
         <p className="mb-4 text-center text-xs font-bold tracking-widest text-amber-400 uppercase">
           Trailer da série
         </p>
-        {videoUrl ? (
-          <VideoPoster
-            videoUrl={videoUrl}
-            imageUrl={getVideoThumbnail(videoUrl) ?? "/uploads/none"}
-            title={title}
-          />
-        ) : (
-          <div className="flex aspect-video w-full items-center justify-center border border-dashed border-white/20 text-sm text-neutral-500">
-            O trailer da série entra em breve.
-          </div>
-        )}
+        <VideoPoster
+          videoUrl={videoUrl}
+          imageUrl={getVideoThumbnail(videoUrl) ?? "/uploads/none"}
+          title={title}
+        />
       </div>
     </section>
   );

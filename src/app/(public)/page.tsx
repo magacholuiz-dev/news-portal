@@ -133,10 +133,10 @@ export default async function HomePage() {
     <>
       <Hero />
 
-      <TrailerSection
-        videoUrl={settings.heroTrailerUrl || null}
-        title={settings.siteTitle}
-      />
+      {/* Trailer: só aparece depois de cadastrado em Configurações. */}
+      {settings.heroTrailerUrl && (
+        <TrailerSection videoUrl={settings.heroTrailerUrl} title={settings.siteTitle} />
+      )}
 
       {/* Estrutura do PDF sempre completa. Capítulos: os 5 continentes
           existem sempre; o mapa voa até onde está a notícia e só desenha
