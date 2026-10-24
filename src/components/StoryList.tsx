@@ -20,8 +20,6 @@ function formatDate(iso: string | null) {
 }
 
 export default function StoryList({ articles }: { articles: StoryArticle[] }) {
-  if (articles.length === 0) return null;
-
   return (
     <section id="reportagens" className="scroll-mt-20 bg-neutral-900 py-14">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -33,6 +31,11 @@ export default function StoryList({ articles }: { articles: StoryArticle[] }) {
           territórios e contextos políticos. Em alguns lugares, o desafio é
           chegar. Em outros, circular. Em outros, voltar.
         </p>
+        {articles.length === 0 && (
+          <p className="text-sm text-neutral-400">
+            As reportagens publicadas aparecem aqui.
+          </p>
+        )}
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {articles.map((article) => (
             <Link

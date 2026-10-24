@@ -8,6 +8,7 @@ import Hero from "@/components/Hero";
 import Link from "next/link";
 import TrailerSection from "@/components/TrailerSection";
 import JournalistsSection from "@/components/JournalistsSection";
+import StoryList from "@/components/StoryList";
 import { getSiteSettings } from "@/lib/settings";
 import { splitPlaces } from "@/lib/places";
 import { toQuoteDTO, type QuoteDTO } from "@/lib/public-types";
@@ -15,7 +16,7 @@ import { toQuoteDTO, type QuoteDTO } from "@/lib/public-types";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [locations, quoteRows, journalists, settings] = await Promise.all([
+  const [locations, quoteRows, journalists, stories, settings] = await Promise.all([
     // Todos os pontos: a Análise de dados mostra os 14 territórios mesmo sem
     // matéria publicada. Os mapas de notícias filtram abaixo (mapLocations).
     prisma.location.findMany({
@@ -37,6 +38,16 @@ export default async function HomePage() {
     prisma.journalist.findMany({
       where: { published: true },
       orderBy: [{ displayOrder: "asc" }, { name: "asc" }],
+    }),
+    // Reportagens publicadas. Os perfis de jornalistas (categoria
+    // "Jornalista") aparecem na seção Entrevistados, não aqui.
+    prisma.article.findMany({
+      where: {
+        published: true,
+        OR: [{ category: null }, { category: { not: "Jornalista" } }],
+      },
+      orderBy: { publishedAt: "desc" },
+      include: { location: true },
     }),
     getSiteSettings(),
   ]);
@@ -153,6 +164,18 @@ export default async function HomePage() {
 
       {/* Explorar trabalha com os territórios (não depende de notícia). */}
       <ExploreSection locations={allMapLocations} />
+
+      <StoryList
+        articles={stories.map((a) => ({
+          slug: a.slug,
+          title: a.title,
+          excerpt: a.excerpt,
+          heroImageUrl: a.heroImageUrl,
+          category: a.category,
+          publishedAt: a.publishedAt?.toISOString() ?? null,
+          locationName: a.location?.name ?? null,
+        }))}
+      />
 
       <JournalistsSection
         journalists={journalists.map((j) => ({
