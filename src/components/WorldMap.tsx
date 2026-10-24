@@ -43,6 +43,14 @@ export type SpotlightTarget = {
 // marcadores ficam fixos numa única posição absoluta.
 const WORLD_BOUNDS: maptilersdk.LngLatBoundsLike = [-179, -80, 179, 80];
 
+/** Marcador simples (bolinha) para território sem notícia publicada. */
+function createDotElement() {
+  const el = document.createElement("div");
+  el.className = "map-marker map-marker--dot";
+  el.innerHTML = '<div class="map-marker-dot"></div>';
+  return el;
+}
+
 function createMarkerElement(thumbnailUrl: string, isAnchor: boolean) {
   const el = document.createElement("div");
   el.className = `map-marker${isAnchor ? " map-marker--anchor" : ""}`;
@@ -168,13 +176,20 @@ export default function WorldMap({
 
     const markers = locations.map((location) => {
       const isAnchor = location.articles.some((a) => a.isAnchorEpisode);
-      const el = createMarkerElement(location.articles[0].heroImageUrl, isAnchor);
+      const first = location.articles[0];
+      const el = first
+        ? createMarkerElement(first.heroImageUrl, isAnchor)
+        : createDotElement();
       el.style.transition = "opacity 0.4s ease";
       if (selectedIds?.includes(location.id)) {
         el.classList.add("map-marker--selected");
       }
       el.addEventListener("click", () =>
-        onMarkerClick ? onMarkerClick(location) : setOpenLocation(location),
+        onMarkerClick
+          ? onMarkerClick(location)
+          : location.articles.length > 0
+            ? setOpenLocation(location)
+            : undefined,
       );
       const dimmed =
         highlightContinent !== null && location.continent !== highlightContinent;
@@ -256,6 +271,23 @@ export default function WorldMap({
           border-width: 3px;
           border-color: #fff;
           box-shadow: 0 0 0 4px rgba(245, 201, 75, 0.55), 0 2px 14px rgba(0,0,0,0.7);
+        }
+        .map-marker-dot {
+          width: 16px;
+          height: 16px;
+          border-radius: 9999px;
+          background: #f5c94b;
+          border: 2px solid #0a0a0a;
+          box-shadow: 0 0 0 3px rgba(245, 201, 75, 0.35), 0 2px 8px rgba(0,0,0,0.6);
+          cursor: pointer;
+          transition: transform 0.15s ease;
+        }
+        .map-marker:hover .map-marker-dot {
+          transform: scale(1.5);
+        }
+        .map-marker--selected .map-marker-dot {
+          background: #22d3ee;
+          box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.5), 0 2px 8px rgba(0,0,0,0.6);
         }
         .map-marker--selected .map-marker-thumb {
           border-color: #22d3ee;

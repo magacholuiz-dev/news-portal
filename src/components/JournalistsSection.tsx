@@ -25,6 +25,11 @@ export default function JournalistsSection({
           perfil para ver os conflitos que cobriu, as fotos em campo e as
           falas que não entraram nos vídeos.
         </p>
+        {journalists.length === 0 && (
+          <p className="border border-dashed border-white/20 px-5 py-10 text-center text-sm text-neutral-400">
+            Os perfis dos entrevistados entram em breve.
+          </p>
+        )}
         <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
           {journalists.map((j) => (
             <Link

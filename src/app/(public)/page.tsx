@@ -4,7 +4,6 @@ import ChapterScroll from "@/components/ChapterScroll";
 import FlightPath, { type RouteStop } from "@/components/FlightPath";
 import CoverageBarChart, { type CoverageRow } from "@/components/CoverageBarChart";
 import ExploreSection from "@/components/ExploreSection";
-import StoryList from "@/components/StoryList";
 import Hero from "@/components/Hero";
 import Link from "next/link";
 import TrailerSection from "@/components/TrailerSection";
@@ -15,7 +14,7 @@ import { toQuoteDTO, type QuoteDTO } from "@/lib/public-types";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [locations, articles, quoteRows, journalists, settings] = await Promise.all([
+  const [locations, quoteRows, journalists, settings] = await Promise.all([
     // Todos os pontos: a Análise de dados mostra os 14 territórios mesmo sem
     // matéria publicada. Os mapas de notícias filtram abaixo (mapLocations).
     prisma.location.findMany({
@@ -25,11 +24,6 @@ export default async function HomePage() {
           orderBy: { publishedAt: "desc" },
         },
       },
-    }),
-    prisma.article.findMany({
-      where: { published: true },
-      orderBy: { publishedAt: "desc" },
-      include: { location: true },
     }),
     prisma.quote.findMany({
       where: {
@@ -63,8 +57,12 @@ export default async function HomePage() {
     }
   }
 
-  const mapLocations: LocationWithArticles[] = locations
-    .filter((location) => location.articles.length > 0)
+  // Todos os territórios (os 14 do recorte + qualquer ponto com notícia);
+  // os com matéria publicada são os "pontos de notícia" do mapa de Capítulos.
+  const allMapLocations: LocationWithArticles[] = locations
+    .filter(
+      (location) => location.articles.length > 0 || location.displayOrder !== null,
+    )
     .map((location) => ({
       id: location.id,
       name: location.name,
@@ -94,15 +92,7 @@ export default async function HomePage() {
       })),
     }));
 
-  const storyArticles = articles.map((article) => ({
-    slug: article.slug,
-    title: article.title,
-    excerpt: article.excerpt,
-    heroImageUrl: article.heroImageUrl,
-    category: article.category,
-    publishedAt: article.publishedAt?.toISOString() ?? null,
-    locationName: article.location?.name ?? null,
-  }));
+  const mapLocations = allMapLocations.filter((l) => l.articles.length > 0);
 
   // Seção 04 (análise de dados): só territórios com Ordem_Exibicao
   // definida (os 14 do recorte jornalístico real) entram na rota aérea e
@@ -143,15 +133,15 @@ export default async function HomePage() {
     <>
       <Hero />
 
-      {settings.heroTrailerUrl && (
-        <TrailerSection videoUrl={settings.heroTrailerUrl} title={settings.siteTitle} />
-      )}
+      <TrailerSection
+        videoUrl={settings.heroTrailerUrl || null}
+        title={settings.siteTitle}
+      />
 
-      {/* Os mapas de notícias (Capítulos e Explorar) vão até onde está a
-          notícia: sem nenhuma matéria publicada com ponto, não aparecem. */}
-      {mapLocations.length > 0 && (
-        <ChapterScroll locations={mapLocations} chapterQuotes={chapterQuotes} />
-      )}
+      {/* Estrutura do PDF sempre completa. Capítulos: os 5 continentes
+          existem sempre; o mapa voa até onde está a notícia e só desenha
+          marcadores de matérias publicadas. */}
+      <ChapterScroll locations={mapLocations} chapterQuotes={chapterQuotes} />
 
       {routeStops.length > 0 && (
         <>
@@ -160,22 +150,17 @@ export default async function HomePage() {
         </>
       )}
 
-      {mapLocations.length > 0 && <ExploreSection locations={mapLocations} />}
+      {/* Explorar trabalha com os territórios (não depende de notícia). */}
+      <ExploreSection locations={allMapLocations} />
 
-      {journalists.length > 0 ? (
-        <JournalistsSection
-          journalists={journalists.map((j) => ({
-            slug: j.slug,
-            name: j.name,
-            role: j.role,
-            photoUrl: j.photoUrl,
-          }))}
-        />
-      ) : (
-        // Enquanto nenhum entrevistado estiver cadastrado, mantém a lista
-        // de reportagens pra seção não ficar vazia.
-        <StoryList articles={storyArticles} />
-      )}
+      <JournalistsSection
+        journalists={journalists.map((j) => ({
+          slug: j.slug,
+          name: j.name,
+          role: j.role,
+          photoUrl: j.photoUrl,
+        }))}
+      />
 
       {settings.closingQuoteText && (
         <section className="border-t border-white/10 bg-neutral-950 px-6 py-20">
