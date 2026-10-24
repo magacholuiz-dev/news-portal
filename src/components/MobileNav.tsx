@@ -8,6 +8,8 @@ const LINKS = [
   { href: "/#capitulos", label: "Capítulos" },
   { href: "/#analise", label: "Análise de Dados" },
   { href: "/#explorar", label: "Explorar" },
+  { href: "/#reportagens", label: "Reportagens" },
+  { href: "/#entrevistados", label: "Jornalistas" },
   { href: "/sobre", label: "Sobre" },
 ];
 

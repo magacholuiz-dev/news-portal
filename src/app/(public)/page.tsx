@@ -21,6 +21,10 @@ export default async function HomePage() {
     // matéria publicada. Os mapas de notícias filtram abaixo (mapLocations).
     prisma.location.findMany({
       include: {
+        journalistPlaces: {
+          where: { journalist: { published: true } },
+          include: { journalist: true },
+        },
         articles: {
           where: { published: true },
           orderBy: { publishedAt: "desc" },
@@ -38,6 +42,9 @@ export default async function HomePage() {
     prisma.journalist.findMany({
       where: { published: true },
       orderBy: [{ displayOrder: "asc" }, { name: "asc" }],
+      include: {
+        places: { orderBy: { displayOrder: "asc" }, include: { location: true } },
+      },
     }),
     // Reportagens publicadas. Os perfis de jornalistas (categoria
     // "Jornalista") aparecem na seção Entrevistados, não aqui.
@@ -73,7 +80,10 @@ export default async function HomePage() {
   // os com matéria publicada são os "pontos de notícia" do mapa de Capítulos.
   const allMapLocations: LocationWithArticles[] = locations
     .filter(
-      (location) => location.articles.length > 0 || location.displayOrder !== null,
+      (location) =>
+        location.articles.length > 0 ||
+        location.displayOrder !== null ||
+        location.journalistPlaces.length > 0,
     )
     .map((location) => ({
       id: location.id,
@@ -91,6 +101,10 @@ export default async function HomePage() {
       journalistsKilledNote: location.journalistsKilledNote,
       quote: cardQuotes.get(location.id) ?? null,
       reportSlug: location.articles[0]?.slug ?? null,
+      journalists: location.journalistPlaces.map((jp) => ({
+        slug: jp.journalist.slug,
+        name: jp.journalist.name,
+      })),
       articles: location.articles.map((article) => ({
         slug: article.slug,
         title: article.title,
@@ -163,7 +177,12 @@ export default async function HomePage() {
       )}
 
       {/* Explorar trabalha com os territórios (não depende de notícia). */}
-      <ExploreSection locations={allMapLocations} />
+      <ExploreSection
+        locations={allMapLocations}
+        journalists={journalists
+          .filter((j) => j.places.length > 0)
+          .map((j) => ({ slug: j.slug, name: j.name }))}
+      />
 
       <StoryList
         articles={stories.map((a) => ({
@@ -182,7 +201,9 @@ export default async function HomePage() {
           slug: j.slug,
           name: j.name,
           role: j.role,
-          places: splitPlaces(j.conflictsCovered),
+          places: j.places.length
+            ? j.places.map((pl) => pl.label ?? pl.location.name)
+            : splitPlaces(j.conflictsCovered),
           photoUrl: j.photoUrl,
         }))}
       />

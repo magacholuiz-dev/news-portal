@@ -84,6 +84,7 @@ export async function getJournalistBySlug(slug: string) {
   const j = await prisma.journalist.findUnique({
     where: { slug },
     include: {
+      places: { orderBy: { displayOrder: "asc" }, include: { location: true } },
       photos: {
         orderBy: [{ displayOrder: "asc" }, { id: "asc" }],
         include: { location: true },

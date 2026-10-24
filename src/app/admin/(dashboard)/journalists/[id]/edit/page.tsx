@@ -13,7 +13,10 @@ export default async function EditJournalistPage({
   const [j, locations] = await Promise.all([
     prisma.journalist.findUnique({
       where: { id: Number(id) },
-      include: { photos: { orderBy: { displayOrder: "asc" } } },
+      include: {
+        photos: { orderBy: { displayOrder: "asc" } },
+        places: { orderBy: { displayOrder: "asc" }, include: { location: true } },
+      },
     }),
     prisma.location.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
   ]);
@@ -30,6 +33,14 @@ export default async function EditJournalistPage({
           photoUrl: j.photoUrl ?? "",
           bio: j.bio ?? "",
           conflictsCovered: j.conflictsCovered ?? "",
+          places: j.places.map((pl) => ({
+            key: String(pl.locationId),
+            locationId: pl.locationId,
+            name: pl.location.name,
+            lat: pl.location.lat,
+            lng: pl.location.lng,
+            label: pl.label ?? pl.location.name,
+          })),
           displayOrder: j.displayOrder,
           published: j.published,
           photos: j.photos.map((p) => ({

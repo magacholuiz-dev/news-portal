@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
-import { parseJournalistBody } from "@/lib/journalist-input";
+import { parseJournalistBody, resolvePlaces } from "@/lib/journalist-input";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -26,15 +26,19 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   if ("error" in parsed) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
-  const { photos, ...data } = parsed;
+  const { photos, places, ...data } = parsed;
+  const resolved = await resolvePlaces(places);
   const journalist = await prisma.journalist.update({
     where: { id: journalistId },
     data: {
       ...data,
+      // Os lugares estruturados (places) substituem o texto livre antigo.
+      conflictsCovered: null,
       photos: {
         deleteMany: {},
         create: photos.map((p, i) => ({ ...p, displayOrder: i })),
       },
+      places: { deleteMany: {}, create: resolved },
     },
   });
   return NextResponse.json({ journalist });

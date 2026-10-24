@@ -24,6 +24,8 @@ export type LocationWithArticles = {
   journalistsKilledNote?: string | null;
   quote?: QuoteDTO | null;
   reportSlug?: string | null;
+  /** Jornalistas que já fizeram reportagem neste ponto. */
+  journalists?: { slug: string; name: string }[];
   articles: ReportArticle[];
 };
 

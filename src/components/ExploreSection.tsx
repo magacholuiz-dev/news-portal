@@ -25,9 +25,12 @@ const ACCESS_CATEGORY_OPTIONS = [
 // escolher até 2 territórios pra ver lado a lado (reaproveita PassportCard).
 export default function ExploreSection({
   locations,
+  journalists = [],
 }: {
   locations: LocationWithArticles[];
+  journalists?: { slug: string; name: string }[];
 }) {
+  const [journalistFilter, setJournalistFilter] = useState("");
   const [continentFilter, setContinentFilter] = useState("");
   const [accessFilter, setAccessFilter] = useState("");
   const [comparisonMode, setComparisonMode] = useState(false);
@@ -37,9 +40,15 @@ export default function ExploreSection({
     return locations.filter((location) => {
       if (continentFilter && location.continent !== continentFilter) return false;
       if (accessFilter && location.accessCategory !== accessFilter) return false;
+      if (
+        journalistFilter &&
+        !location.journalists?.some((j) => j.slug === journalistFilter)
+      ) {
+        return false;
+      }
       return true;
     });
-  }, [locations, continentFilter, accessFilter]);
+  }, [locations, continentFilter, accessFilter, journalistFilter]);
 
   function toggleSelection(location: LocationWithArticles) {
     setSelected((prev) => {
@@ -60,7 +69,7 @@ export default function ExploreSection({
           Filtre e compare os territórios
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-sm text-neutral-400">
-          Sem roteiro fixo: filtre por continente ou categoria de acesso, ou
+          Sem roteiro fixo: filtre por continente, categoria de acesso ou jornalista, ou
           ative o modo comparação e escolha até dois territórios pra ver
           lado a lado.
         </p>
@@ -92,6 +101,21 @@ export default function ExploreSection({
             </option>
           ))}
         </select>
+
+        {journalists.length > 0 && (
+          <select
+            value={journalistFilter}
+            onChange={(e) => setJournalistFilter(e.target.value)}
+            className="rounded-sm border border-white/15 bg-neutral-900 px-3 py-2 text-sm text-white outline-none focus:border-amber-400"
+          >
+            <option value="">Todos os jornalistas</option>
+            {journalists.map((j) => (
+              <option key={j.slug} value={j.slug}>
+                {j.name}
+              </option>
+            ))}
+          </select>
+        )}
 
         <button
           type="button"

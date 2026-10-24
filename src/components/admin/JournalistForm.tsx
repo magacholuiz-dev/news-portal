@@ -3,6 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import UploadField from "./UploadField";
+import LocationPicker from "./LocationPicker";
+
+export type PlaceValue = {
+  key: string;
+  locationId: number | null;
+  name: string;
+  lat: number;
+  lng: number;
+  label: string;
+};
 
 export type JournalistFormValues = {
   id?: number;
@@ -11,6 +21,7 @@ export type JournalistFormValues = {
   photoUrl: string;
   bio: string;
   conflictsCovered: string;
+  places: PlaceValue[];
   displayOrder: number;
   published: boolean;
   photos: { key: string; imageUrl: string; caption: string; credit: string; locationId: string }[];
@@ -22,6 +33,7 @@ const empty: JournalistFormValues = {
   photoUrl: "",
   bio: "",
   conflictsCovered: "",
+  places: [],
   displayOrder: 0,
   published: true,
   photos: [],
@@ -106,11 +118,40 @@ export default function JournalistForm({
         <textarea rows={6} value={values.bio} onChange={(e) => set("bio", e.target.value)} className={input} />
       </label>
 
-      <label className="block text-sm">
-        <span className="mb-1 block font-medium text-neutral-700">Locais / conflitos que cobriu</span>
-        <textarea rows={2} value={values.conflictsCovered} onChange={(e) => set("conflictsCovered", e.target.value)} placeholder="ex: Sudão do Sul, México, Ucrânia" className={input} />
-        <span className="mt-1 block text-xs text-neutral-400">Separe por vírgula. Aparecem no cartão do entrevistado: “Jornalista - Sudão do Sul - México”.</span>
-      </label>
+      <div className="border-t border-neutral-200 pt-6">
+        <span className="mb-1 block text-sm font-medium text-neutral-700">Lugares onde já fez reportagem</span>
+        <p className="mb-3 text-xs text-neutral-400">
+          Busque cada lugar e adicione. Eles aparecem no mapa do perfil, no filtro por jornalista da seção Explorar e no
+          cartão: “Jornalista - Sudão do Sul - México”. Edite o texto de cada lugar para mostrar só o país, por exemplo.
+        </p>
+        <ul className="mb-3 space-y-2">
+          {values.places.map((pl, i) => (
+            <li key={pl.key} className="flex items-center gap-2 rounded-sm border border-neutral-200 p-2">
+              <input
+                value={pl.label}
+                onChange={(e) => set("places", values.places.map((x, idx) => (idx === i ? { ...x, label: e.target.value } : x)))}
+                className={input + " flex-1 text-sm"}
+                aria-label="Nome exibido"
+              />
+              <span className="hidden text-xs text-neutral-400 sm:block">{pl.lat.toFixed(2)}, {pl.lng.toFixed(2)}</span>
+              <button type="button" onClick={() => set("places", values.places.filter((_, idx) => idx !== i))} className="text-xs text-red-600 hover:text-red-800">
+                Remover
+              </button>
+            </li>
+          ))}
+          {values.places.length === 0 && <li className="text-xs text-neutral-400">Nenhum lugar adicionado.</li>}
+        </ul>
+        <LocationPicker
+          value={null}
+          onChange={(r) => {
+            if (!r) return;
+            setValues((p) => ({
+              ...p,
+              places: [...p.places, { key: String(Date.now()), locationId: null, name: r.name, lat: r.lat, lng: r.lng, label: r.name }],
+            }));
+          }}
+        />
+      </div>
 
       <div className="border-t border-neutral-200 pt-6">
         <span className="mb-1 block text-sm font-medium text-neutral-700">Galeria de fotos em campo</span>

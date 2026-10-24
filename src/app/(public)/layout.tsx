@@ -37,6 +37,12 @@ export default async function PublicLayout({
             <Link href="/#explorar" className="hover:text-amber-400">
               Explorar
             </Link>
+            <Link href="/#reportagens" className="hover:text-amber-400">
+              Reportagens
+            </Link>
+            <Link href="/#entrevistados" className="hover:text-amber-400">
+              Jornalistas
+            </Link>
             <Link href="/sobre" scroll={false} className="hover:text-amber-400">
               Sobre
             </Link>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { getJournalistBySlug } from "@/lib/report";
+import WorldMapLoader from "./WorldMapLoader";
 import AudioClip from "./AudioClip";
 import VideoButton from "./VideoButton";
 import { quoteKindLabel } from "@/lib/quote-kinds";
@@ -31,11 +32,32 @@ export default function JournalistProfileView({ journalist: j }: { journalist: J
         </section>
       )}
 
-      {j.conflictsCovered && (
+      {j.places.length > 0 ? (
         <section className="border-t border-white/10 py-8">
-          <p className="mb-3 text-xs font-bold tracking-widest text-neutral-500 uppercase">Conflitos que cobriu</p>
-          <p className="font-serif text-2xl font-bold">{j.conflictsCovered}</p>
+          <p className="mb-3 text-xs font-bold tracking-widest text-neutral-500 uppercase">Onde já fez reportagem</p>
+          <p className="mb-4 font-serif text-2xl font-bold">
+            {j.places.map((pl) => pl.label ?? pl.location.name).join(" · ")}
+          </p>
+          <div className="h-[320px] w-full overflow-hidden rounded-sm">
+            <WorldMapLoader
+              locations={j.places.map((pl) => ({
+                id: pl.locationId,
+                name: pl.label ?? pl.location.name,
+                lat: pl.location.lat,
+                lng: pl.location.lng,
+                continent: pl.location.continent,
+                articles: [],
+              }))}
+            />
+          </div>
         </section>
+      ) : (
+        j.conflictsCovered && (
+          <section className="border-t border-white/10 py-8">
+            <p className="mb-3 text-xs font-bold tracking-widest text-neutral-500 uppercase">Conflitos que cobriu</p>
+            <p className="font-serif text-2xl font-bold">{j.conflictsCovered}</p>
+          </section>
+        )
       )}
 
       {j.photos.length > 0 && (
