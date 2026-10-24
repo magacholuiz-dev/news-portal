@@ -9,6 +9,7 @@ import Link from "next/link";
 import TrailerSection from "@/components/TrailerSection";
 import JournalistsSection from "@/components/JournalistsSection";
 import { getSiteSettings } from "@/lib/settings";
+import { splitPlaces } from "@/lib/places";
 import { toQuoteDTO, type QuoteDTO } from "@/lib/public-types";
 
 export const dynamic = "force-dynamic";
@@ -131,7 +132,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero />
+      <Hero colorOne={settings.heroColor1} colorTwo={settings.heroColor2} />
 
       {/* Trailer: só aparece depois de cadastrado em Configurações. */}
       {settings.heroTrailerUrl && (
@@ -158,6 +159,7 @@ export default async function HomePage() {
           slug: j.slug,
           name: j.name,
           role: j.role,
+          places: splitPlaces(j.conflictsCovered),
           photoUrl: j.photoUrl,
         }))}
       />

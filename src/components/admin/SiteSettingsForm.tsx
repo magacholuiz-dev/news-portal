@@ -4,6 +4,59 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { SiteSettings } from "@/lib/settings";
 
+const HEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+
+function ColorField({
+  label,
+  help,
+  value,
+  onChange,
+}: {
+  label: string;
+  help: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const valid = HEX.test(value);
+  // <input type="color"> só aceita #rrggbb
+  const picker = valid && value.length === 7 ? value : "#000000";
+  return (
+    <div className="text-sm">
+      <span className="mb-1 block font-medium text-neutral-700">{label}</span>
+      <div className="flex items-center gap-3">
+        <input
+          type="color"
+          value={picker}
+          onChange={(e) => onChange(e.target.value)}
+          aria-label={`Seletor de cor: ${label}`}
+          className="h-10 w-12 cursor-pointer rounded-sm border border-neutral-300 bg-white p-1"
+        />
+        <input
+          value={value}
+          onChange={(e) => onChange(e.target.value.trim())}
+          maxLength={7}
+          placeholder="#000000"
+          spellCheck={false}
+          className={`w-32 rounded-sm border px-3 py-2 font-mono outline-none focus:border-neutral-900 ${
+            valid ? "border-neutral-300" : "border-red-400"
+          }`}
+        />
+        <span
+          className="h-10 flex-1 rounded-sm border border-neutral-200"
+          style={{ backgroundColor: valid ? value : "transparent" }}
+          aria-hidden
+        />
+      </div>
+      <span className="mt-1 block text-xs text-neutral-400">{help}</span>
+      {!valid && (
+        <span className="mt-1 block text-xs text-red-600">
+          Use o formato hexadecimal, ex.: #5c1322
+        </span>
+      )}
+    </div>
+  );
+}
+
 export default function SiteSettingsForm({
   initial,
 }: {
@@ -71,6 +124,18 @@ export default function SiteSettingsForm({
 
       <section className="space-y-4">
         <h2 className="font-serif text-lg font-black">Abertura</h2>
+        <ColorField
+          label="Cor da seção 1 (primeira frase)"
+          help="Fundo da abertura enquanto aparece “Onde um jornalista precisa ir para contar uma guerra?”. Padrão: preto (#0a0a0a)."
+          value={values.heroColor1}
+          onChange={(v) => set("heroColor1", v)}
+        />
+        <ColorField
+          label="Cor da seção 2 (segunda frase)"
+          help="Fundo que surge com “E o que ele encontra quando chega lá?”. Padrão: bordô (#5c1322)."
+          value={values.heroColor2}
+          onChange={(v) => set("heroColor2", v)}
+        />
         <label className="block text-sm">
           <span className="mb-1 block font-medium text-neutral-700">
             Trailer da série (YouTube ou Vimeo)

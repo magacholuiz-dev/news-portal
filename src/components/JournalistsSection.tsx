@@ -4,6 +4,8 @@ export type JournalistCard = {
   slug: string;
   name: string;
   role: string | null;
+  /** Locais/conflitos que o jornalista cobriu. */
+  places: string[];
   photoUrl: string | null;
 };
 
@@ -56,7 +58,10 @@ export default function JournalistsSection({
                 <h3 className="font-serif text-base leading-snug font-bold text-white group-hover:underline">
                   {j.name}
                 </h3>
-                {j.role && <p className="mt-0.5 text-xs text-neutral-400">{j.role}</p>}
+                {/* "Jornalista - Sudão do Sul - México": função + cada local */}
+                <p className="mt-0.5 text-xs leading-snug text-neutral-400">
+                  {[j.role || "Jornalista", ...j.places].join(" - ")}
+                </p>
               </div>
             </Link>
           ))}

@@ -9,7 +9,15 @@ import { useEffect, useRef, useState } from "react";
  * pro mapa (Seção 02/03, "Capítulos"). Sem lib de scrollytelling: só
  * progresso de scroll dentro de um container 2x a altura da tela.
  */
-export default function Hero() {
+export default function Hero({
+  colorOne = "#0a0a0a",
+  colorTwo = "#5c1322",
+}: {
+  /** Fundo da seção 1 (primeira frase). */
+  colorOne?: string;
+  /** Fundo da seção 2 (segunda frase). */
+  colorTwo?: string;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
 
@@ -43,7 +51,10 @@ export default function Hero() {
 
   return (
     <div id="hero" ref={containerRef} className="relative h-[200vh] scroll-mt-16">
-      <div className="sticky top-0 h-screen w-full bg-neutral-950">
+      <div
+        className="sticky top-0 h-screen w-full"
+        style={{ backgroundColor: colorOne }}
+      >
         {/* Fundo escuro atmosférico com fade-in suave no carregamento (uma
             única camada estática, sem gradientes empilhados nem opacity
             animada via React — evita um glitch de composição do Chromium
@@ -57,7 +68,7 @@ export default function Hero() {
             reintroduzir o glitch de composição já resolvido no Hero. */}
         <div
           className="absolute inset-0"
-          style={{ backgroundColor: "#5c1322", opacity: phrase2Opacity }}
+          style={{ backgroundColor: colorTwo, opacity: phrase2Opacity }}
         />
 
         <div className="relative z-10 flex h-full items-center justify-center px-6 text-center">

@@ -107,8 +107,9 @@ export default function JournalistForm({
       </label>
 
       <label className="block text-sm">
-        <span className="mb-1 block font-medium text-neutral-700">Conflitos que cobriu</span>
-        <textarea rows={2} value={values.conflictsCovered} onChange={(e) => set("conflictsCovered", e.target.value)} placeholder="ex: Ucrânia, Síria, Sudão" className={input} />
+        <span className="mb-1 block font-medium text-neutral-700">Locais / conflitos que cobriu</span>
+        <textarea rows={2} value={values.conflictsCovered} onChange={(e) => set("conflictsCovered", e.target.value)} placeholder="ex: Sudão do Sul, México, Ucrânia" className={input} />
+        <span className="mt-1 block text-xs text-neutral-400">Separe por vírgula. Aparecem no cartão do entrevistado: “Jornalista - Sudão do Sul - México”.</span>
       </label>
 
       <div className="border-t border-neutral-200 pt-6">
