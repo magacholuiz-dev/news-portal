@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import HeroVideo, { type HeroVideoSources } from "./HeroVideo";
 
 /**
  * Seção 01 (abertura imersiva): tela cheia escura com duas frases do
@@ -19,11 +20,14 @@ function textOn(hex: string) {
 export default function Hero({
   colorOne = "#2b2b2b",
   colorTwo = "#eb6a4b",
+  video,
 }: {
   /** Fundo da seção 1 (primeira frase). */
   colorOne?: string;
   /** Fundo da seção 2 (segunda frase). */
   colorTwo?: string;
+  /** Vídeo de fundo (Configurações). Sem ele só valem as cores. */
+  video?: HeroVideoSources;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
@@ -62,6 +66,8 @@ export default function Hero({
         className="sticky top-0 h-screen w-full"
         style={{ backgroundColor: colorOne }}
       >
+        {video && <HeroVideo sources={video} active={phrase2Opacity < 1} />}
+
         {/* Fundo escuro atmosférico com fade-in suave no carregamento (uma
             única camada estática, sem gradientes empilhados nem opacity
             animada via React — evita um glitch de composição do Chromium

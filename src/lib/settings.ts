@@ -16,6 +16,12 @@ export type SiteSettings = {
   faviconUrl: string; // ícone da aba do navegador (vazio = ícone padrão)
   episodesTitle: string; // título da seção de episódios
   episodesIntro: string; // texto de introdução do projeto
+  // Vídeo de fundo da abertura (MP4/WebM, versão desktop e mobile) + capa.
+  heroVideoMp4: string;
+  heroVideoWebm: string;
+  heroVideoMobileMp4: string;
+  heroVideoMobileWebm: string;
+  heroPosterUrl: string;
 };
 
 const KEYS: (keyof SiteSettings)[] = [
@@ -28,6 +34,11 @@ const KEYS: (keyof SiteSettings)[] = [
   "faviconUrl",
   "episodesTitle",
   "episodesIntro",
+  "heroVideoMp4",
+  "heroVideoWebm",
+  "heroVideoMobileMp4",
+  "heroVideoMobileWebm",
+  "heroPosterUrl",
 ];
 
 /** Configurações editáveis em /admin/settings. Nunca quebra a página: se o
@@ -43,6 +54,11 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     faviconUrl: "",
     episodesTitle: "",
     episodesIntro: "",
+    heroVideoMp4: "",
+    heroVideoWebm: "",
+    heroVideoMobileMp4: "",
+    heroVideoMobileWebm: "",
+    heroPosterUrl: "",
   };
   try {
     const rows = await prisma.siteSetting.findMany({

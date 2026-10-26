@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { SiteSettings } from "@/lib/settings";
 import UploadField from "./UploadField";
+import VideoUploadField from "./VideoUploadField";
 
 const HEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
@@ -143,6 +144,26 @@ export default function SiteSettingsForm({
             Aparece logo depois das frases de abertura. Os vídeos dos episódios são cadastrados em Episódios.
           </span>
         </label>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-serif text-lg font-black">Vídeo de fundo da abertura</h2>
+        <p className="text-xs text-neutral-500">
+          Toca em tela cheia atrás das duas perguntas, sem som e em loop (também no celular). Use arquivos MP4 e WebM
+          de 10 a 20 segundos: desktop 1920×1080 (até ~8MB) e mobile 720p (até ~3MB). Não use link do YouTube. O guia
+          de compressão está em docs/video-de-fundo.md. Sem vídeo, a abertura usa só as cores abaixo.
+        </p>
+        <VideoUploadField label="Desktop — MP4" value={values.heroVideoMp4} onChange={(u) => set("heroVideoMp4", u)} />
+        <VideoUploadField label="Desktop — WebM" value={values.heroVideoWebm} onChange={(u) => set("heroVideoWebm", u)} />
+        <VideoUploadField label="Celular — MP4 (720p)" value={values.heroVideoMobileMp4} onChange={(u) => set("heroVideoMobileMp4", u)} />
+        <VideoUploadField label="Celular — WebM (720p)" value={values.heroVideoMobileWebm} onChange={(u) => set("heroVideoMobileWebm", u)} />
+        <UploadField
+          label="Imagem de capa"
+          kind="image"
+          value={values.heroPosterUrl}
+          onChange={(u) => set("heroPosterUrl", u)}
+          help="Aparece enquanto o vídeo carrega, em conexão lenta e para quem prefere menos movimento. Use JPG ou WebP leve (até ~200KB) para carregar em menos de 2s no 4G."
+        />
       </section>
 
       <section className="space-y-4">

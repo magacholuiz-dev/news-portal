@@ -14,6 +14,11 @@ const MAX_LEN: Record<string, number> = {
   faviconUrl: 500,
   episodesTitle: 120,
   episodesIntro: 1500,
+  heroVideoMp4: 500,
+  heroVideoWebm: 500,
+  heroVideoMobileMp4: 500,
+  heroVideoMobileWebm: 500,
+  heroPosterUrl: 500,
 };
 
 export async function GET(request: NextRequest) {

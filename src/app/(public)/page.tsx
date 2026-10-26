@@ -161,7 +161,17 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero colorOne={settings.heroColor1} colorTwo={settings.heroColor2} />
+      <Hero
+        colorOne={settings.heroColor1}
+        colorTwo={settings.heroColor2}
+        video={{
+          mp4: settings.heroVideoMp4,
+          webm: settings.heroVideoWebm,
+          mobileMp4: settings.heroVideoMobileMp4,
+          mobileWebm: settings.heroVideoMobileWebm,
+          poster: settings.heroPosterUrl,
+        }}
+      />
 
       {/* Episódios (YouTube) e entrevistas em áudio (Spotify): só aparece
           depois de cadastrado em Episódios / Configurações / Jornalistas. */}
