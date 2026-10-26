@@ -21,6 +21,7 @@ export type JournalistFormValues = {
   photoUrl: string;
   bio: string;
   conflictsCovered: string;
+  spotifyUrl: string;
   places: PlaceValue[];
   displayOrder: number;
   published: boolean;
@@ -33,6 +34,7 @@ const empty: JournalistFormValues = {
   photoUrl: "",
   bio: "",
   conflictsCovered: "",
+  spotifyUrl: "",
   places: [],
   displayOrder: 0,
   published: true,
@@ -116,6 +118,14 @@ export default function JournalistForm({
       <label className="block text-sm">
         <span className="mb-1 block font-medium text-neutral-700">Perfil</span>
         <textarea rows={6} value={values.bio} onChange={(e) => set("bio", e.target.value)} className={input} />
+      </label>
+
+      <label className="block text-sm">
+        <span className="mb-1 block font-medium text-neutral-700">Entrevista em áudio (Spotify)</span>
+        <input value={values.spotifyUrl} onChange={(e) => set("spotifyUrl", e.target.value)} placeholder="https://open.spotify.com/episode/…" className={input} />
+        <span className="mt-1 block text-xs text-neutral-400">
+          Link do episódio no Spotify. Aparece em “Ouça as entrevistas” e no painel do mapa, junto da aspa.
+        </span>
       </label>
 
       <div className="border-t border-neutral-200 pt-6">

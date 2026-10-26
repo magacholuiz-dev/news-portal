@@ -14,6 +14,8 @@ export type SiteSettings = {
   heroColor1: string;
   heroColor2: string;
   faviconUrl: string; // ícone da aba do navegador (vazio = ícone padrão)
+  episodesTitle: string; // título da seção de episódios
+  episodesIntro: string; // texto de introdução do projeto
 };
 
 const KEYS: (keyof SiteSettings)[] = [
@@ -24,6 +26,8 @@ const KEYS: (keyof SiteSettings)[] = [
   "heroColor1",
   "heroColor2",
   "faviconUrl",
+  "episodesTitle",
+  "episodesIntro",
 ];
 
 /** Configurações editáveis em /admin/settings. Nunca quebra a página: se o
@@ -37,6 +41,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     heroColor1: DEFAULT_HERO_COLOR_1,
     heroColor2: DEFAULT_HERO_COLOR_2,
     faviconUrl: "",
+    episodesTitle: "",
+    episodesIntro: "",
   };
   try {
     const rows = await prisma.siteSetting.findMany({

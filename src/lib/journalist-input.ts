@@ -22,6 +22,7 @@ export type JournalistInput = {
   photoUrl: string | null;
   bio: string | null;
   conflictsCovered: string | null;
+  spotifyUrl: string | null;
   displayOrder: number;
   published: boolean;
   photos: PhotoInput[];
@@ -75,6 +76,7 @@ export function parseJournalistBody(
     photoUrl: str(b.photoUrl),
     bio: str(b.bio),
     conflictsCovered: str(b.conflictsCovered),
+    spotifyUrl: str(b.spotifyUrl),
     displayOrder: Number.isFinite(order) ? Math.trunc(order) : 0,
     published: b.published === undefined ? true : Boolean(b.published),
     photos,

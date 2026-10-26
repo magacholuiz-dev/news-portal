@@ -131,6 +131,21 @@ export default function SiteSettingsForm({
       </section>
 
       <section className="space-y-4">
+        <h2 className="font-serif text-lg font-black">Seção de episódios</h2>
+        <label className="block text-sm">
+          <span className="mb-1 block font-medium text-neutral-700">Título da seção</span>
+          <input value={values.episodesTitle} onChange={(e) => set("episodesTitle", e.target.value)} maxLength={120} placeholder="ex.: Cinco episódios, nove jornalistas, uma pergunta" className={input} />
+        </label>
+        <label className="block text-sm">
+          <span className="mb-1 block font-medium text-neutral-700">Texto de introdução do projeto</span>
+          <textarea value={values.episodesIntro} onChange={(e) => set("episodesIntro", e.target.value)} rows={4} maxLength={1500} className={input} />
+          <span className="mt-1 block text-xs text-neutral-400">
+            Aparece logo depois das frases de abertura. Os vídeos dos episódios são cadastrados em Episódios.
+          </span>
+        </label>
+      </section>
+
+      <section className="space-y-4">
         <h2 className="font-serif text-lg font-black">Abertura</h2>
         <ColorField
           label="Cor da seção 1 (primeira frase)"

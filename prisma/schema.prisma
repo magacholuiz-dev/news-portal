@@ -112,6 +112,9 @@ model Journalist {
   photos           FieldPhoto[]
   quotes           Quote[]
   places           JournalistPlace[]
+  // Entrevista em áudio no Spotify (episódio/faixa) — aparece na seção de
+  // episódios e no painel lateral do mapa.
+  spotifyUrl       String?
 }
 
 // Foto do jornalista em campo (galeria do perfil e da reportagem do
@@ -175,4 +178,15 @@ model JournalistPlace {
 
   @@id([journalistId, locationId])
   @@index([locationId])
+}
+
+/// Episódios da série (vídeos do YouTube) exibidos logo após a abertura.
+model Episode {
+  id           Int      @id @default(autoincrement())
+  title        String
+  videoUrl     String
+  duration     String? // texto livre, ex.: "42 min"
+  displayOrder Int      @default(0)
+  published    Boolean  @default(true)
+  createdAt    DateTime @default(now())
 }

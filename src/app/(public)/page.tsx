@@ -6,7 +6,7 @@ import CoverageBarChart, { type CoverageRow } from "@/components/CoverageBarChar
 import ExploreSection from "@/components/ExploreSection";
 import Hero from "@/components/Hero";
 import Link from "next/link";
-import TrailerSection from "@/components/TrailerSection";
+import EpisodesSection from "@/components/EpisodesSection";
 import JournalistsSection from "@/components/JournalistsSection";
 import StoryList from "@/components/StoryList";
 import { getSiteSettings } from "@/lib/settings";
@@ -16,7 +16,7 @@ import { toQuoteDTO, type QuoteDTO } from "@/lib/public-types";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [locations, quoteRows, journalists, stories, settings] = await Promise.all([
+  const [locations, quoteRows, journalists, stories, episodes, settings] = await Promise.all([
     // Todos os pontos: a Análise de dados mostra os 13 territórios mesmo sem
     // matéria publicada. Os mapas de notícias filtram abaixo (mapLocations).
     prisma.location.findMany({
@@ -55,6 +55,10 @@ export default async function HomePage() {
       },
       orderBy: { publishedAt: "desc" },
       include: { location: true },
+    }),
+    prisma.episode.findMany({
+      where: { published: true },
+      orderBy: [{ displayOrder: "asc" }, { id: "asc" }],
     }),
     getSiteSettings(),
   ]);
@@ -159,10 +163,29 @@ export default async function HomePage() {
     <>
       <Hero colorOne={settings.heroColor1} colorTwo={settings.heroColor2} />
 
-      {/* Trailer: só aparece depois de cadastrado em Configurações. */}
-      {settings.heroTrailerUrl && (
-        <TrailerSection videoUrl={settings.heroTrailerUrl} title={settings.siteTitle} />
-      )}
+      {/* Episódios (YouTube) e entrevistas em áudio (Spotify): só aparece
+          depois de cadastrado em Episódios / Configurações / Jornalistas. */}
+      <EpisodesSection
+        title={settings.episodesTitle}
+        intro={settings.episodesIntro}
+        trailerUrl={settings.heroTrailerUrl}
+        siteTitle={settings.siteTitle}
+        episodes={episodes.map((e) => ({
+          id: e.id,
+          title: e.title,
+          videoUrl: e.videoUrl,
+          duration: e.duration,
+        }))}
+        interviews={journalists
+          .filter((j) => j.spotifyUrl)
+          .map((j) => ({
+            slug: j.slug,
+            name: j.name,
+            role: j.role,
+            photoUrl: j.photoUrl,
+            spotifyUrl: j.spotifyUrl as string,
+          }))}
+      />
 
       {/* Estrutura do PDF sempre completa. Capítulos: os 5 continentes
           existem sempre; o mapa voa até onde está a notícia e só desenha

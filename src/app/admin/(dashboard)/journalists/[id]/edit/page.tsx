@@ -33,6 +33,7 @@ export default async function EditJournalistPage({
           photoUrl: j.photoUrl ?? "",
           bio: j.bio ?? "",
           conflictsCovered: j.conflictsCovered ?? "",
+          spotifyUrl: j.spotifyUrl ?? "",
           places: j.places.map((pl) => ({
             key: String(pl.locationId),
             locationId: pl.locationId,

@@ -28,6 +28,9 @@ export default async function DashboardLayout({
             <Link href="/admin/territories" className="hover:text-neutral-900">
               Pontos do mapa
             </Link>
+            <Link href="/admin/episodes" className="hover:text-neutral-900">
+              Episódios
+            </Link>
             <Link href="/admin/journalists" className="hover:text-neutral-900">
               Jornalistas
             </Link>

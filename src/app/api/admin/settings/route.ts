@@ -12,6 +12,8 @@ const MAX_LEN: Record<string, number> = {
   heroColor1: 7,
   heroColor2: 7,
   faviconUrl: 500,
+  episodesTitle: 120,
+  episodesIntro: 1500,
 };
 
 export async function GET(request: NextRequest) {
