@@ -42,16 +42,16 @@ export default function JournalistsSection({
               scroll={false}
               className="group flex h-full flex-col border border-white/10 transition-colors hover:border-amber-400/50"
             >
-              <div className="aspect-square w-full shrink-0 overflow-hidden bg-neutral-800">
+              <div className="relative aspect-square w-full shrink-0 overflow-hidden bg-neutral-800">
                 {j.photoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={j.photoUrl}
                     alt={j.name}
-                    className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
-                  <span className="flex h-full w-full items-center justify-center font-serif text-6xl font-black text-neutral-600">
+                  <span className="absolute inset-0 flex items-center justify-center font-serif text-6xl font-black text-neutral-600">
                     {j.name.slice(0, 1)}
                   </span>
                 )}
