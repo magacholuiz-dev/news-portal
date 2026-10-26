@@ -122,6 +122,10 @@ export default async function HomePage() {
       })),
     }));
 
+  // Matérias que são o perfil de um jornalista (mesmo slug) ficam só em
+  // Entrevistados, nunca em Reportagens.
+  const journalistSlugs = new Set(journalists.map((j) => j.slug));
+
   const mapLocations = allMapLocations.filter((l) => l.articles.length > 0);
 
   // Seção 04 (análise de dados): só territórios com Ordem_Exibicao
@@ -218,7 +222,9 @@ export default async function HomePage() {
       />
 
       <StoryList
-        articles={stories.map((a) => ({
+        articles={stories
+          .filter((a) => !journalistSlugs.has(a.slug))
+          .map((a) => ({
           slug: a.slug,
           title: a.title,
           excerpt: a.excerpt,
