@@ -32,21 +32,23 @@ export default function JournalistsSection({
             Os perfis dos entrevistados entram em breve.
           </p>
         )}
-        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+        {/* Sempre 3 colunas (3×3 com 9 jornalistas), foto quadrada: grade
+            alinhada como no Instagram, inclusive no celular. */}
+        <div className="mx-auto grid max-w-4xl grid-cols-3 gap-2 sm:gap-5">
           {journalists.map((j) => (
             <Link
               key={j.slug}
               href={`/entrevistados/${j.slug}`}
               scroll={false}
-              className="group block border border-white/10 transition-colors hover:border-amber-400/50"
+              className="group flex h-full flex-col border border-white/10 transition-colors hover:border-amber-400/50"
             >
-              <div className="aspect-[3/4] w-full overflow-hidden bg-neutral-800">
+              <div className="aspect-square w-full shrink-0 overflow-hidden bg-neutral-800">
                 {j.photoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={j.photoUrl}
                     alt={j.name}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
                   <span className="flex h-full w-full items-center justify-center font-serif text-6xl font-black text-neutral-600">
@@ -54,12 +56,12 @@ export default function JournalistsSection({
                   </span>
                 )}
               </div>
-              <div className="p-3">
-                <h3 className="font-serif text-base leading-snug font-bold text-white group-hover:underline">
+              <div className="p-2 sm:p-3">
+                <h3 className="font-serif text-xs leading-snug font-bold text-white group-hover:underline sm:text-base">
                   {j.name}
                 </h3>
                 {/* "Jornalista - Sudão do Sul - México": função + cada local */}
-                <p className="mt-0.5 text-xs leading-snug text-neutral-400">
+                <p className="mt-0.5 line-clamp-3 text-[10px] leading-snug text-neutral-400 sm:text-xs">
                   {[j.role || "Jornalista", ...j.places].join(" - ")}
                 </p>
               </div>

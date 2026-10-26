@@ -76,10 +76,6 @@ export default function CoverageBarChart({ rows }: { rows: CoverageRow[] }) {
           })}
         </div>
 
-        <p className="mt-4 text-[11px] text-neutral-500">
-          🎬 Território com episódio em vídeo publicado.
-        </p>
-
         <p className="mt-10 font-serif text-xl leading-snug font-bold text-white sm:text-2xl">
           Quanto menor a barra, mais difícil é chegar.
         </p>
