@@ -23,7 +23,7 @@ export default function LegacyArticle({
   return (
     <article className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       {article.category && (
-        <p className="mb-3 text-xs font-bold tracking-wide text-red-700 uppercase">
+        <p className="mb-3 text-xs font-bold tracking-wide text-amber-700 uppercase">
           {article.category}
         </p>
       )}
@@ -47,7 +47,7 @@ export default function LegacyArticle({
       </div>
 
       <div
-        className="prose prose-neutral prose-lg max-w-none prose-headings:font-serif prose-a:text-red-700"
+        className="prose prose-neutral prose-lg max-w-none prose-headings:font-serif prose-a:text-amber-700"
         dangerouslySetInnerHTML={{ __html: article.contentHtml }}
       />
 

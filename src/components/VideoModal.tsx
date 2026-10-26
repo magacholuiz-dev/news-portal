@@ -55,6 +55,6 @@ export default function VideoModal({
         />
       </div>
     </div>,
-    document.body,
+    document.getElementById("site-root") ?? document.body,
   );
 }

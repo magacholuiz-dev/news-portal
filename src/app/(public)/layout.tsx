@@ -15,7 +15,7 @@ export default async function PublicLayout({
 }) {
   const siteTitle = await getSiteTitle();
   return (
-    <>
+    <div id="site-root" className="site-theme flex flex-1 flex-col bg-neutral-900">
       <header className="sticky top-0 z-[600] border-b border-white/10 bg-neutral-950/95">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <Link
@@ -84,6 +84,6 @@ export default async function PublicLayout({
       {/* Janelas sobrepostas (reportagem, perfil, Sobre): rotas interceptadas
           em @modal — a home continua montada por baixo. */}
       {modal}
-    </>
+    </div>
   );
 }

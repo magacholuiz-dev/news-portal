@@ -2,8 +2,8 @@ import { prisma } from "@/lib/prisma";
 
 export const DEFAULT_SITE_TITLE = "Portal Notícia";
 // Cores de fundo da abertura: seção 1 (primeira frase) e seção 2 (segunda).
-export const DEFAULT_HERO_COLOR_1 = "#0a0a0a"; // preto
-export const DEFAULT_HERO_COLOR_2 = "#5c1322"; // bordô
+export const DEFAULT_HERO_COLOR_1 = "#2b2b2b"; // preto (identidade visual)
+export const DEFAULT_HERO_COLOR_2 = "#eb6a4b"; // laranja (identidade visual)
 export const HEX_COLOR = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
 export type SiteSettings = {
@@ -13,6 +13,7 @@ export type SiteSettings = {
   closingQuoteAuthor: string;
   heroColor1: string;
   heroColor2: string;
+  faviconUrl: string; // ícone da aba do navegador (vazio = ícone padrão)
 };
 
 const KEYS: (keyof SiteSettings)[] = [
@@ -22,6 +23,7 @@ const KEYS: (keyof SiteSettings)[] = [
   "closingQuoteAuthor",
   "heroColor1",
   "heroColor2",
+  "faviconUrl",
 ];
 
 /** Configurações editáveis em /admin/settings. Nunca quebra a página: se o
@@ -34,6 +36,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     closingQuoteAuthor: "",
     heroColor1: DEFAULT_HERO_COLOR_1,
     heroColor2: DEFAULT_HERO_COLOR_2,
+    faviconUrl: "",
   };
   try {
     const rows = await prisma.siteSetting.findMany({

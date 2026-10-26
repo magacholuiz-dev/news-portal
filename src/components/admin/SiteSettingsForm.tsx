@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { SiteSettings } from "@/lib/settings";
+import UploadField from "./UploadField";
 
 const HEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
@@ -50,7 +51,7 @@ function ColorField({
       <span className="mt-1 block text-xs text-neutral-400">{help}</span>
       {!valid && (
         <span className="mt-1 block text-xs text-red-600">
-          Use o formato hexadecimal, ex.: #5c1322
+          Use o formato hexadecimal, ex.: #eb6a4b
         </span>
       )}
     </div>
@@ -120,19 +121,26 @@ export default function SiteSettingsForm({
             admin.
           </span>
         </label>
+        <UploadField
+          label="Ícone do site (favicon)"
+          kind="image"
+          value={values.faviconUrl}
+          onChange={(u) => set("faviconUrl", u)}
+          help="Imagem quadrada, PNG de 512×512. Aparece na aba do navegador e no atalho do celular. Vazio usa o ícone padrão do projeto."
+        />
       </section>
 
       <section className="space-y-4">
         <h2 className="font-serif text-lg font-black">Abertura</h2>
         <ColorField
           label="Cor da seção 1 (primeira frase)"
-          help="Fundo da abertura enquanto aparece “Onde um jornalista precisa ir para contar uma guerra?”. Padrão: preto (#0a0a0a)."
+          help="Fundo da abertura enquanto aparece “Onde um jornalista precisa ir para contar uma guerra?”. Padrão: preto da identidade (#2b2b2b)."
           value={values.heroColor1}
           onChange={(v) => set("heroColor1", v)}
         />
         <ColorField
           label="Cor da seção 2 (segunda frase)"
-          help="Fundo que surge com “E o que ele encontra quando chega lá?”. Padrão: bordô (#5c1322)."
+          help="Fundo que surge com “E o que ele encontra quando chega lá?”. Padrão: laranja da identidade (#eb6a4b)."
           value={values.heroColor2}
           onChange={(v) => set("heroColor2", v)}
         />

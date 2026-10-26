@@ -24,11 +24,11 @@ export type PassportCardData = {
 const STAMP_STYLES: Record<string, { label: string; className: string }> = {
   "Visto Concedido": {
     label: "Visto concedido",
-    className: "border-emerald-400 text-emerald-400",
+    className: "border-white text-white",
   },
   "Visto Condicionado": {
     label: "Visto condicionado",
-    className: "border-sky-400 text-sky-400",
+    className: "border-neutral-300 text-neutral-300",
   },
   "Zona de Risco": {
     label: "Zona de risco",
@@ -36,7 +36,7 @@ const STAMP_STYLES: Record<string, { label: string; className: string }> = {
   },
   "Entrada Barrada": {
     label: "Entrada barrada",
-    className: "border-red-400 text-red-400",
+    className: "border-amber-400 bg-amber-400 text-neutral-900",
   },
 };
 

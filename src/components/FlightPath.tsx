@@ -126,9 +126,9 @@ export default function FlightPath({ stops }: { stops: RouteStop[] }) {
         .flight-beam {
           background: linear-gradient(
             to top,
-            rgba(245, 201, 75, 0.9) 0%,
-            rgba(245, 201, 75, 0.35) 40%,
-            rgba(245, 201, 75, 0) 100%
+            rgba(235, 106, 75, 0.9) 0%,
+            rgba(235, 106, 75, 0.35) 40%,
+            rgba(235, 106, 75, 0) 100%
           );
           animation: flightBeamIn 0.9s ease-out;
         }
@@ -193,8 +193,8 @@ export default function FlightPath({ stops }: { stops: RouteStop[] }) {
                   borderRadius: "9999px",
                   pointerEvents: "none",
                   background:
-                    "radial-gradient(circle, rgba(255,239,189,1) 0%, rgba(245,201,75,0.65) 45%, rgba(245,201,75,0) 75%)",
-                  boxShadow: "0 0 14px 4px rgba(245,201,75,0.55)",
+                    "radial-gradient(circle, rgba(247,194,179,1) 0%, rgba(235,106,75,0.65) 45%, rgba(235,106,75,0) 75%)",
+                  boxShadow: "0 0 14px 4px rgba(235,106,75,0.55)",
                 }}
               />
             ))}

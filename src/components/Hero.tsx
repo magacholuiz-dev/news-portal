@@ -9,9 +9,16 @@ import { useEffect, useRef, useState } from "react";
  * pro mapa (Seção 02/03, "Capítulos"). Sem lib de scrollytelling: só
  * progresso de scroll dentro de um container 2x a altura da tela.
  */
+/** Texto escuro sobre fundo claro (ex.: laranja) e bege sobre fundo escuro. */
+function textOn(hex: string) {
+  const n = parseInt(hex.replace("#", ""), 16);
+  const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  return 0.299 * r + 0.587 * g + 0.114 * b > 140 ? "#2b2b2b" : "#decfbc";
+}
+
 export default function Hero({
-  colorOne = "#0a0a0a",
-  colorTwo = "#5c1322",
+  colorOne = "#2b2b2b",
+  colorTwo = "#eb6a4b",
 }: {
   /** Fundo da seção 1 (primeira frase). */
   colorOne?: string;
@@ -63,7 +70,7 @@ export default function Hero({
           className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(251,191,36,0.08),rgba(0,0,0,0)_55%)] animate-[heroFadeIn_1.6s_ease-out]"
         />
 
-        {/* Fundo vira bordô junto com a 2ª frase — mesma opacity da
+        {/* Fundo vira laranja junto com a 2ª frase — mesma opacity da
             frase (inline style, não classe com transition), pra não
             reintroduzir o glitch de composição já resolvido no Hero. */}
         <div
@@ -74,21 +81,23 @@ export default function Hero({
         <div className="relative z-10 flex h-full items-center justify-center px-6 text-center">
           <p
             style={{
+              color: textOn(colorOne),
               opacity: phrase1Opacity,
               transform: `translateY(${phrase1Shift}px)`,
               pointerEvents: phrase1Opacity > 0.1 ? "auto" : "none",
             }}
-            className="absolute max-w-2xl font-serif text-3xl leading-tight font-black text-white sm:text-5xl"
+            className="absolute max-w-2xl font-serif text-5xl leading-none font-black sm:text-7xl"
           >
             Onde um jornalista precisa ir para contar uma guerra?
           </p>
           <p
             style={{
+              color: textOn(colorTwo),
               opacity: phrase2Opacity,
               transform: `translateY(${phrase2Shift}px)`,
               pointerEvents: phrase2Opacity > 0.1 ? "auto" : "none",
             }}
-            className="absolute max-w-2xl font-serif text-3xl leading-tight font-black text-white sm:text-5xl"
+            className="absolute max-w-2xl font-serif text-5xl leading-none font-black sm:text-7xl"
           >
             E o que ele encontra quando chega lá?
           </p>

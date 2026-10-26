@@ -106,7 +106,7 @@ export default function ReportView({ report }: { report: ReportData }) {
               </div>
               <div className="border border-white/10 p-5">
                 <p className="text-xs text-neutral-500 uppercase">Jornalistas mortos</p>
-                <p className="mt-2 font-serif text-3xl font-black text-red-400">{location.journalistsKilled ?? "—"}</p>
+                <p className="mt-2 font-serif text-3xl font-black text-amber-400">{location.journalistsKilled ?? "—"}</p>
                 {location.journalistsKilledNote && <p className="text-xs text-neutral-500">{location.journalistsKilledNote}</p>}
               </div>
             </div>

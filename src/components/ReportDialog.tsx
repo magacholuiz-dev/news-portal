@@ -160,6 +160,6 @@ export default function ReportDialog({
         </div>
       </div>
     </div>,
-    document.body,
+    document.getElementById("site-root") ?? document.body,
   );
 }

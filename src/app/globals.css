@@ -7,6 +7,38 @@
   --font-serif: var(--font-serif);
 }
 
+/* Identidade visual do site público (guia do designer): laranja #EB6A4B,
+   preto #2B2B2B, bege #DECFBC e a escala de cinzas. As variáveis do
+   Tailwind são sobrescritas só dentro de .site-theme, então o admin
+   continua com as cores neutras de sempre. O bege substitui o branco
+   (fundos claros e texto sobre fundo escuro). */
+.site-theme {
+  --color-white: #decfbc;
+  --color-neutral-50: #f5f0e8;
+  --color-neutral-100: #ebe3d8;
+  --color-neutral-200: #decfbc;
+  --color-neutral-300: #bfc0bf;
+  --color-neutral-400: #acacac;
+  --color-neutral-500: #8a8a8a;
+  --color-neutral-600: #5c5c5c;
+  --color-neutral-700: #444444;
+  --color-neutral-800: #343434;
+  --color-neutral-900: #2b2b2b;
+  --color-neutral-950: #1f1f1f;
+  --color-amber-100: #f9ddd3;
+  --color-amber-300: #f08e74;
+  --color-amber-400: #eb6a4b;
+  --color-amber-500: #d65638;
+  --color-amber-700: #a63f27;
+  font-family: "Courier New", var(--font-courier-prime), Courier, monospace;
+}
+
+/* Títulos e frases-chave: Big Shoulders em caixa alta. */
+.site-theme .font-serif {
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
 /* Fade-in atmosférico do fundo do Hero (Seção 01). */
 @keyframes heroFadeIn {
   from {

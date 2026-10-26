@@ -11,6 +11,7 @@ const MAX_LEN: Record<string, number> = {
   closingQuoteAuthor: 120,
   heroColor1: 7,
   heroColor2: 7,
+  faviconUrl: 500,
 };
 
 export async function GET(request: NextRequest) {
@@ -45,7 +46,7 @@ export async function PUT(request: NextRequest) {
     const value = String(body[key] ?? "").trim();
     if ((key === "heroColor1" || key === "heroColor2") && value && !HEX_COLOR.test(value)) {
       return NextResponse.json(
-        { error: "Cor inválida. Use o formato hexadecimal, ex.: #5c1322." },
+        { error: "Cor inválida. Use o formato hexadecimal, ex.: #eb6a4b." },
         { status: 400 },
       );
     }

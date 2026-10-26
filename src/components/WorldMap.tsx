@@ -252,8 +252,8 @@ export default function WorldMap({
           width: 44px;
           height: 44px;
           border-radius: 9999px;
-          border: 2px solid #f5c94b;
-          box-shadow: 0 0 0 3px rgba(245, 201, 75, 0.25), 0 2px 10px rgba(0,0,0,0.6);
+          border: 2px solid #eb6a4b;
+          box-shadow: 0 0 0 3px rgba(235, 106, 75, 0.25), 0 2px 10px rgba(0,0,0,0.6);
           overflow: hidden;
           transition: transform 0.15s ease, box-shadow 0.15s ease;
           cursor: pointer;
@@ -265,22 +265,22 @@ export default function WorldMap({
         }
         .map-marker:hover .map-marker-thumb {
           transform: scale(1.7);
-          box-shadow: 0 0 0 4px rgba(245, 201, 75, 0.4), 0 4px 16px rgba(0,0,0,0.7);
+          box-shadow: 0 0 0 4px rgba(235, 106, 75, 0.4), 0 4px 16px rgba(0,0,0,0.7);
         }
         .map-marker--anchor .map-marker-thumb {
           width: 54px;
           height: 54px;
           border-width: 3px;
           border-color: #fff;
-          box-shadow: 0 0 0 4px rgba(245, 201, 75, 0.55), 0 2px 14px rgba(0,0,0,0.7);
+          box-shadow: 0 0 0 4px rgba(235, 106, 75, 0.55), 0 2px 14px rgba(0,0,0,0.7);
         }
         .map-marker-dot {
           width: 16px;
           height: 16px;
           border-radius: 9999px;
-          background: #f5c94b;
-          border: 2px solid #0a0a0a;
-          box-shadow: 0 0 0 3px rgba(245, 201, 75, 0.35), 0 2px 8px rgba(0,0,0,0.6);
+          background: #eb6a4b;
+          border: 2px solid #2b2b2b;
+          box-shadow: 0 0 0 3px rgba(235, 106, 75, 0.35), 0 2px 8px rgba(0,0,0,0.6);
           cursor: pointer;
           transition: transform 0.15s ease;
         }
@@ -309,7 +309,7 @@ export default function WorldMap({
               position: "absolute",
               inset: 0,
               pointerEvents: "none",
-              background: `radial-gradient(circle at ${spotlightPos.x}px ${spotlightPos.y}px, rgba(245,201,75,0.22) 0px, rgba(245,201,75,0.07) 46px, rgba(0,0,0,0) 62px, rgba(0,0,0,0) 72px, rgba(10,10,10,0.45) 160px, rgba(10,10,10,0.6) 100%)`,
+              background: `radial-gradient(circle at ${spotlightPos.x}px ${spotlightPos.y}px, rgba(235,106,75,0.22) 0px, rgba(235,106,75,0.07) 46px, rgba(0,0,0,0) 62px, rgba(0,0,0,0) 72px, rgba(10,10,10,0.45) 160px, rgba(10,10,10,0.6) 100%)`,
             }}
           />
         )}
