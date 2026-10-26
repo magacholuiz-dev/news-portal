@@ -1,5 +1,6 @@
 import type { QuoteDTO } from "@/lib/public-types";
 import VideoButton from "./VideoButton";
+import SpotifyButton from "./SpotifyButton";
 
 /** Aspa grande do capítulo: foto do jornalista, fala e botão que abre o
  * vídeo no minuto. Sem jornalista vira o "quadro de aspas vazio" (capítulo
@@ -49,6 +50,13 @@ export default function ChapterQuote({
             />
           )}
         </figcaption>
+      )}
+      {!empty && quote.spotifyUrl && (
+        <SpotifyButton
+          spotifyUrl={quote.spotifyUrl}
+          title={`Entrevista com ${quote.journalistName} no Spotify`}
+          className="mt-4"
+        />
       )}
     </figure>
   );

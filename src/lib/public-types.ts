@@ -11,6 +11,8 @@ export type QuoteDTO = {
   videoUrl: string | null;
   videoStartSeconds: number | null;
   audioUrl: string | null;
+  /** Entrevista em áudio do jornalista no Spotify. */
+  spotifyUrl: string | null;
 };
 
 export function toQuoteDTO(
@@ -27,5 +29,6 @@ export function toQuoteDTO(
     videoUrl: q.videoUrl,
     videoStartSeconds: q.videoStartSeconds,
     audioUrl: q.audioUrl,
+    spotifyUrl: j?.spotifyUrl ?? null,
   };
 }
