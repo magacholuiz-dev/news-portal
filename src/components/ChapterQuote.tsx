@@ -2,8 +2,8 @@ import type { QuoteDTO } from "@/lib/public-types";
 import VideoButton from "./VideoButton";
 
 /** Aspa grande do capítulo: foto do jornalista, fala e botão que abre o
- * vídeo no minuto. Sem jornalista vira o "quadro de aspas vazio" (ex.:
- * Oceania — nenhum entrevistado esteve lá). */
+ * vídeo no minuto. Sem jornalista vira o "quadro de aspas vazio" (capítulo
+ * em que nenhum entrevistado esteve lá). */
 export default function ChapterQuote({
   quote,
   chapterTitle,

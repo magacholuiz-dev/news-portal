@@ -13,14 +13,14 @@ export type Chapter = {
   focusView: MapFocusView;
 };
 
-// Seção 03 do briefing: 5 capítulos, um por continente/região coberta
+// Seção 03 do briefing: 4 capítulos, um por continente/região coberta
 // pelo projeto. O enquadramento (focusView) é aproximado — cobre os
 // territórios daquela região sem precisar de fronteiras GeoJSON.
 export const CHAPTERS: Chapter[] = [
   {
     continent: "Europa",
     title: "Europa: o conflito no centro da agenda global",
-    body: "A guerra na Ucrânia concentra a maior cobertura internacional dentre os 14 territórios analisados neste projeto — uma cobertura hipervisível, sustentada por uma presença massiva de imprensa internacional desde 2022.",
+    body: "A guerra na Ucrânia concentra a maior cobertura internacional dentre os 13 territórios analisados neste projeto — uma cobertura hipervisível, sustentada por uma presença massiva de imprensa internacional desde 2022.",
     focusView: { center: [31, 49], zoom: 4.2 },
   },
   {
@@ -40,12 +40,6 @@ export const CHAPTERS: Chapter[] = [
     title: "Américas: direitos humanos fora do radar",
     body: "Cuba e México aparecem no recorte por episódios pontuais — repressão a protestos, êxodo migratório, violência extrema contra jornalistas — mais do que por cobertura contínua.",
     focusView: { center: [-90, 18], zoom: 2.8 },
-  },
-  {
-    continent: "Oceania",
-    title: "Oceania: a zona de sombra mais extrema do mapa",
-    body: "Papua-Nova Guiné é o território com menor cobertura midiática de todo o levantamento: silêncio quase total da imprensa internacional sobre disputas locais e regionais.",
-    focusView: { center: [147, -8], zoom: 4.2 },
   },
 ];
 

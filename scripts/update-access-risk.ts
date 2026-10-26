@@ -26,7 +26,6 @@ const UPDATES: { name: string; accessCategory: string; riskLevelRSF: string }[] 
   { name: "Trípoli, Líbia", accessCategory: "Zona de Risco", riskLevelRSF: "Muito Alto" },
   { name: "Havana, Cuba", accessCategory: "Visto Condicionado", riskLevelRSF: "Alto" },
   { name: "Cidade do México, México", accessCategory: "Zona de Risco", riskLevelRSF: "Muito Alto" },
-  { name: "Port Moresby, Papua-Nova Guiné", accessCategory: "Entrada Barrada", riskLevelRSF: "Médio / Alto" },
 ];
 
 async function main() {

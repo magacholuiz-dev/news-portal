@@ -49,7 +49,6 @@ const CONTINENT_OPTIONS = [
   { value: "Asia e Oriente Medio", label: "Ásia e Oriente Médio" },
   { value: "Africa", label: "África" },
   { value: "Americas", label: "Américas" },
-  { value: "Oceania", label: "Oceania" },
 ];
 
 export default function AdminArticleForm({

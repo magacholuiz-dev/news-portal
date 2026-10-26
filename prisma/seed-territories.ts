@@ -1,5 +1,5 @@
 /**
- * Cria os 14 territórios da planilha do projeto (cobertura, classificação
+ * Cria os 13 territórios da planilha do projeto (cobertura, classificação
  * de atenção midiática, observação jornalística, categoria de acesso e
  * nível de risco RSF). Não apaga nada e NÃO gera matérias: as notícias de
  * cada território são cadastradas pelo portal administrativo. Territórios
@@ -279,26 +279,6 @@ const TERRITORIES: Territory[] = [
     videoUrl: "https://www.youtube.com/watch?v=dba70l3KFG8",
     accessCategory: "Zona de Risco",
     riskLevelRSF: "Muito Alto",
-  },
-  {
-    id: "PNG_B",
-    name: "Port Moresby, Papua-Nova Guiné",
-    lat: -9.4438,
-    lng: 147.1803,
-    continent: "Oceania",
-    continentOrder: 5,
-    displayOrder: 14,
-    coveragePct: 0.5,
-    mediaAttentionClass: "Zonas de Sombra",
-    journalistNote:
-      "Silêncio quase total na imprensa internacional sobre disputas locais/regionais.",
-    isAnchorEpisode: true,
-    episodeTheme: "O silêncio quase total da imprensa internacional",
-    // Al Jazeera English: "Violent postelection riots continue in
-    // Papua New Guinea"
-    videoUrl: "https://www.youtube.com/watch?v=F4gmSGFTZ5w",
-    accessCategory: "Entrada Barrada",
-    riskLevelRSF: "Médio / Alto",
   },
 ];
 

@@ -15,7 +15,7 @@ type BeamPoint = { key: string; x: number; y: number };
 
 /**
  * Seção 04 parte 1 (análise de dados): um mapa próprio (instância
- * MapLibre separada da de "Capítulos") onde cada um dos 14 territórios
+ * MapLibre separada da de "Capítulos") onde cada um dos 13 territórios
  * "acende" — um facho de luz sobe do marcador em direção ao topo do
  * mapa — conforme o card dele fica ativo no scroll (mesmo motor
  * `useScrollSteps` do ChapterScroll, baseado em IntersectionObserver).
@@ -153,7 +153,7 @@ export default function FlightPath({ stops }: { stops: RouteStop[] }) {
           Luzes sobre uma cobertura desigual
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-sm text-neutral-400 sm:text-base">
-          Role para acompanhar os 14 territórios do levantamento, na ordem em
+          Role para acompanhar os 13 territórios do levantamento, na ordem em
           que entram no recorte do projeto — cada um acende no mapa conforme
           aparece — e o que cada um revela sobre acesso e risco para quem
           cobre esses lugares.

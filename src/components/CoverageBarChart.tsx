@@ -6,8 +6,8 @@ export type CoverageRow = {
 };
 
 /**
- * Nomes de Location vêm como "Cidade, País" (ex: "Port Moresby,
- * Papua-Nova Guiné"). O rótulo do gráfico usa só o país/território —
+ * Nomes de Location vêm como "Cidade, País" (ex: "Kiev,
+ * Ucrânia"). O rótulo do gráfico usa só o país/território —
  * mais curto e mais legível, cabe melhor na coluna estreita do mobile.
  * O nome completo continua disponível no `title` (tooltip) e na lista
  * acessível abaixo.

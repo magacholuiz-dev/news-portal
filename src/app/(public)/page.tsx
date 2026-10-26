@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const [locations, quoteRows, journalists, stories, settings] = await Promise.all([
-    // Todos os pontos: a Análise de dados mostra os 14 territórios mesmo sem
+    // Todos os pontos: a Análise de dados mostra os 13 territórios mesmo sem
     // matéria publicada. Os mapas de notícias filtram abaixo (mapLocations).
     prisma.location.findMany({
       include: {
@@ -76,7 +76,7 @@ export default async function HomePage() {
     }
   }
 
-  // Todos os territórios (os 14 do recorte + qualquer ponto com notícia);
+  // Todos os territórios (os 13 do recorte + qualquer ponto com notícia);
   // os com matéria publicada são os "pontos de notícia" do mapa de Capítulos.
   const allMapLocations: LocationWithArticles[] = locations
     .filter(
@@ -121,7 +121,7 @@ export default async function HomePage() {
   const mapLocations = allMapLocations.filter((l) => l.articles.length > 0);
 
   // Seção 04 (análise de dados): só territórios com Ordem_Exibicao
-  // definida (os 14 do recorte jornalístico real) entram na rota aérea e
+  // definida (os 13 do recorte jornalístico real) entram na rota aérea e
   // no gráfico de cobertura — Locations fora desse recorte (sem os
   // campos da planilha preenchidos) não aparecem aqui.
   const dataTerritories = locations

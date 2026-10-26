@@ -13,7 +13,7 @@ export type LocationWithArticles = {
   lng: number;
   continent?: string | null;
   // Campos do recorte jornalístico (Seção 04/05) — opcionais, só
-  // preenchidos depois que o seed real dos 14 territórios rodar.
+  // preenchidos depois que o seed real dos 13 territórios rodar.
   displayOrder?: number | null;
   coveragePct?: number | null;
   mediaAttentionClass?: string | null;

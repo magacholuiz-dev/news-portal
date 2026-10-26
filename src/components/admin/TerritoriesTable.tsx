@@ -37,7 +37,6 @@ const CONTINENT_OPTIONS = [
   "Asia e Oriente Medio",
   "Africa",
   "Americas",
-  "Oceania",
 ];
 
 const ACCESS_CATEGORY_OPTIONS = [
